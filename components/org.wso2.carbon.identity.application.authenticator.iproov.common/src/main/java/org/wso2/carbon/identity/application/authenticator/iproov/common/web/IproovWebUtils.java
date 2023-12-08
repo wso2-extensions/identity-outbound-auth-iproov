@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpResponse;
@@ -38,10 +39,25 @@ public class IproovWebUtils {
     private IproovWebUtils() {
 
     }
-    public static HttpResponse httpGet(URI requestURL) throws IOException, IproovClientException {
+    public static HttpResponse httpGet(URI requestURL, String tokenEndpoint, String clientId, String clientSecret)
+            throws IOException, IproovClientException {
 
         HttpGet request = new HttpGet(requestURL);
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken());
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken(tokenEndpoint, clientId, clientSecret));
+
+        CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
+        try (CloseableHttpResponse response = client.execute(request)) {
+            return toHttpResponse(response);
+        }
+    }
+
+    public static HttpResponse httpPost(URI requestURL, String payload, String clientId, String clientSecret)
+            throws IOException, IproovClientException {
+
+        HttpPost request = new HttpPost(requestURL);
+        buildBasicAuthHeader(request, clientId, clientSecret);
+        request.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        request.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
 
         CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
         try (CloseableHttpResponse response = client.execute(request)) {
@@ -58,13 +74,12 @@ public class IproovWebUtils {
         return result;
     }
 
-    private static String getAccessToken() {
+    private static String getAccessToken(String tokenEndpoint, String clientId, String clientSecret) {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().useSystemProperties().build()) {
 
-            String tokenEndpointVal = "";
-            HttpPost httpPost = new HttpPost(tokenEndpointVal);
-            buildBasicAuthHeader(httpPost);
+            HttpPost httpPost = new HttpPost(tokenEndpoint);
+            buildBasicAuthHeader(httpPost, clientId, clientSecret);
             List<BasicNameValuePair> urlParameters = new ArrayList<>();
             urlParameters.add(new BasicNameValuePair("grant_type", CLIENT_CREDENTIALS_GRANT_TYPE));
             httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
@@ -91,10 +106,8 @@ public class IproovWebUtils {
         }
     }
 
-    private static void buildBasicAuthHeader(HttpRequestBase httpRequestBase) {
+    private static void buildBasicAuthHeader(HttpRequestBase httpRequestBase, String clientId, String clientSecret) {
 
-        String clientId = "";
-        String clientSecret = "";
         String auth = clientId + ":" + clientSecret;
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
         httpRequestBase.setHeader(HttpHeaders.AUTHORIZATION, "Basic " +

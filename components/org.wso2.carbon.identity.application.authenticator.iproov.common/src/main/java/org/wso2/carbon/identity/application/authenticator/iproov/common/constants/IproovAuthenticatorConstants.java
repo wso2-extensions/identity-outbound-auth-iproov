@@ -15,6 +15,8 @@ public class IproovAuthenticatorConstants {
 
         RETRIEVING_REG_USER_FAILURE("65003",
                 "Retrieving iProov registered user failed for the given userId."),
+        RETRIEVING_VERIFY_TOKEN_FAILURE("65004",
+                "Retrieving the verify token failed for the user."),
         IPROOV_BASE_URL_INVALID_FAILURE("65008", "Provided iProov base URL is invalid."),
         IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65010",
                 "Provided iProov access token is either invalid or expired"),
@@ -54,7 +56,7 @@ public class IproovAuthenticatorConstants {
          */
         public String getCode() {
 
-            return IPROOV.IPROOV_API_PREFIX + code;
+            return IPROOV_API_PREFIX + code;
         }
 
         /**
@@ -84,23 +86,24 @@ public class IproovAuthenticatorConstants {
         }
     }
 
-    /**
-    *
-    */
-    public static class IPROOV {
-
-        public static final String IPROOV_API_PREFIX = "IPROOV-API-";
-
-    }
-
+    public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String API_KEY = "api_key";
     public static final String SECRET = "secret";
     public static final String USER_ID = "user_id";
     public static final String RESOURCE = "resource";
     public static final String ASSURANCE_TYPE = "assurance_type";
+    public static final String TOKEN = "token";
+    public static final String CLIENT = "client";
+    public static final String RISK_PROFILE = "risk_profile";
+    public static final String VERIFICATION_STATUS = "passed";
+
+    public static final String RESOURCE_VALUE = "URL";
+    public static final String ASSURANCE_TYPE_VALUE = "genuine_presence";
+    public static final String CLIENT_VALUE = "User Agent";
+    public static final String RISK_PROFILE_VALUE = "low";
 
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
-
     public static final String IPROOV_GET_USER_PATH = "/users/";
     public static final String IPROOV_VERIFY_TOKEN_PATH = "/claim/verify/token";
+    public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/claim/verify/validate";
 }
