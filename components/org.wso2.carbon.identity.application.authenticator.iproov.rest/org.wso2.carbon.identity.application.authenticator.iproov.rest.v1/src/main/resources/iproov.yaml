@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: 'WSO2 Identity Server - iProov Federated Authenticator API Definition'
+  description: 'This document specifies RESTful API for authentication using iProov federated authenticator.'
+  contact:
+    name: WSO2
+    url: 'http://wso2.com/products/identity-server/'
+    email: iam-dev@wso2.org
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://{server-url}/t/{tenant-domain}/api/iproov/v1'
+    variables:
+      tenant-domain:
+        default: "carbon.super"
+      server-url:
+        default: "localhost:9443"
+# security:
+#   - OAuth2: [ ]
+#   - BasicAuth: [ ]
+
+paths:
+  /authentication/status/{sessionKey}:
+    get:
+      tags:
+        - iProov Authentication
+      summary: Retrieve user authentication status.
+      description: This API is used to retrieve a user's authentication status when logging in via iProov.
+      operationId: getAuthenticationStatus
+      parameters:
+        - name: sessionKey
+          in: path
+          description: sessionKey provided by the iProov Authenticator during the authentication initiation.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: some_error_code
+          description: An error code.
+        message:
+          type: string
+          example: Some Error Message
+          description: An error message.
+        description:
+          type: string
+          example: Some Error Description
+          description: An error description.
+        traceId:
+          type: string
+          example: Some Correlation for Error Instance
+          description: An error trace identifier.
+    #-----------------------------------------------------
+    # Authentication status response Object
+    #-----------------------------------------------------
+    StatusResponse:
+      type: object
+      properties:
+        sessionKey:
+          type: string
+          example: bf98f2b5caca07c703d2401f4298967d9829ded2978dffc04c4b95cf61f87a49
+        timeStamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ REQUEST_SENT, INITIATED, INITIATED_RESPONSE, COMPLETED, CANCELED, FAILED ]
+          example: COMPLETED
+
+  #-----------------------------------------------------
+  # Descriptions of Authenticators API responses.
+  #-----------------------------------------------------
+  responses:
+    BadRequest:
+      description: Invalid input in the request.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Requested resource is not found.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication information is missing or invalid.
+    Forbidden:
+      description: Access forbidden.
+    ServerError:
+      description: Internal server error.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+  #-----------------------------------------------------
+  # Applicable authentication mechanisms.
+  #-----------------------------------------------------
+  # securitySchemes:
+  #   BasicAuth:
+  #     type: http
+  #     scheme: basic
+  #   OAuth2:
+  #     type: oauth2
+  #     flows:
+  #       authorizationCode:
+  #         authorizationUrl: 'https://localhost:9443/oauth2/authorize'
+  #         tokenUrl: 'https://localhost:9443/oauth2/token'
+  #         scopes: { }

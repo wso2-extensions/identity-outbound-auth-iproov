@@ -1,5 +1,8 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.common.constants;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This class contains the constants used by the Iproov Authenticator.
  */
@@ -18,13 +21,18 @@ public class IproovAuthenticatorConstants {
         RETRIEVING_VERIFY_TOKEN_FAILURE("65004",
                 "Retrieving the verify token failed for the user."),
         IPROOV_BASE_URL_INVALID_FAILURE("65008", "Provided iProov base URL is invalid."),
-        IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65010",
-                "Provided iProov access token is either invalid or expired"),
+        IPROOV_API_KEY_INVALID_FAILURE("65009", "Provided iProov api key is invalid."),
+        IPROOV_API_SECRET_INVALID_FAILURE("65010", "Provided iProov api secret is invalid."),
+        IPROOV_OAUTH_USERNAME_INVALID_FAILURE("65011", "Provided iProov oauth username is invalid."),
+        IPROOV_OAUTH_PASSWORD_INVALID_FAILURE("65012", "Provided iProov oauth password is invalid."),
+
+
         SERVER_ERROR_INVALID_AUTHENTICATION_PROPERTIES("65013",
                 "Invalid authenticator configurations or no user found."),
         SERVER_ERROR_CREATING_HTTP_CLIENT("65014", "Error while creating http client.",
-                                                  "Server error encountered while creating http client.")
-        ;
+                                                  "Server error encountered while creating http client."),
+        IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65015",
+                "Provided iProov access token is either invalid or expired");
         private final String code;
         private final String message;
         private final String description;
@@ -86,9 +94,20 @@ public class IproovAuthenticatorConstants {
         }
     }
 
+    public static final String AUTHENTICATOR_NAME = "IproovAuthenticator";
+    public static final String AUTHENTICATOR_FRIENDLY_NAME = "Iproov";
+    public static final String SESSION_DATA_KEY = "sessionDataKey";
+    public static final String TENANT_DOMAIN = "tenantDomain";
+    public static final String USERNAME = "username";
+
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
-    public static final String API_KEY = "api_key";
-    public static final String SECRET = "secret";
+    public static final String CORRELATION_ID_KEY = "Correlation-ID";
+
+    public static final String BASE_URL = "baseUrl";
+    public static final String API_KEY = "apiKey";
+    public static final String SECRET = "apiSecret";
+    public static final String OAUTH_USERNAME = "oauthUsername";
+    public static final String OAUTH_PASSWORD = "oauthPassword";
     public static final String USER_ID = "user_id";
     public static final String RESOURCE = "resource";
     public static final String ASSURANCE_TYPE = "assurance_type";
@@ -103,7 +122,57 @@ public class IproovAuthenticatorConstants {
     public static final String RISK_PROFILE_VALUE = "low";
 
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
+    public static final String ACCESS_TOKEN_PATH = "/access_token";
     public static final String IPROOV_GET_USER_PATH = "/users/";
-    public static final String IPROOV_VERIFY_TOKEN_PATH = "/claim/verify/token";
+    public static final String IPROOV_VERIFY_TOKEN_PATH = "/api/v2/claim/verify/token";
     public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/claim/verify/validate";
+
+    public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
+
+    // REST API Parameters
+    public static final String AUTH_STATUS = "authStatus";
+    public static final String AUTH_REQUEST_ID = "authRequestId";
+    public static final List<String> TERMINATING_STATUSES = Arrays.asList("COMPLETED", "FAILED", "CANCELED");
+
+
+    /**
+     * Object holding authentication mobile response status.
+     */
+    public enum AuthenticationStatus {
+
+        INVALID_TOKEN("INVALID_TOKEN", "Authentication failed due to an internal server error. " +
+                "To fix this, contact your system administrator."),
+        INVALID_REQUEST("INVALID_REQUEST", "Invalid username provided"),
+        INVALID_USER("INVALID_USER", "User does not exist in HYPR"),
+        PENDING("PENDING", "Authentication with HYPR is in progress. Awaiting for the user to " +
+                "authenticate via the registered smart device"),
+        COMPLETED("COMPLETED", "Authentication successfully completed."),
+        FAILED("FAILED", "Authentication failed. Try again."),
+        CANCELED("CANCELED", "Authentication with HYPR was cancelled by the user.");
+
+        private final String name;
+        private final String message;
+
+        /**
+         * Create an Error Message.
+         *
+         * @param name    Relevant error code.
+         * @param message Relevant error message.
+         */
+        AuthenticationStatus(String name, String message) {
+
+            this.name = name;
+            this.message = message;
+        }
+
+        public String getName() {
+
+            return name;
+        }
+
+        public String getMessage() {
+
+            return message;
+        }
+    }
 }

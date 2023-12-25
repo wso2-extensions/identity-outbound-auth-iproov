@@ -93,4 +93,83 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!--             You need to build this first https://github.com/madurangasiriwardena/openapi-generator-cxf-wso2 -->
+<!--                        <plugin>-->
+<!--                            <groupId>org.openapitools</groupId>-->
+<!--                            <artifactId>openapi-generator-maven-plugin</artifactId>-->
+<!--                            <version>4.1.2</version>-->
+<!--                            <executions>-->
+<!--                                <execution>-->
+<!--                                    <goals>-->
+<!--                                        <goal>generate</goal>-->
+<!--                                    </goals>-->
+<!--                                    <configuration>-->
+<!--                                        <inputSpec>${project.basedir}/src/main/resources/iproov.yaml</inputSpec>-->
+<!--                                        <generatorName>org.wso2.carbon.codegen.CxfWso2Generator</generatorName>-->
+<!--                                        <configOptions>-->
+<!--                                            <sourceFolder>src/gen/java</sourceFolder>-->
+<!--                                            <apiPackage>org.wso2.carbon.identity.application.authenticator.iproov.rest.v1</apiPackage>-->
+<!--                                            <modelPackage>org.wso2.carbon.identity.application.authenticator.iproov.rest.v1</modelPackage>-->
+<!--                                            <packageName>org.wso2.carbon.identity.application.authenticator.iproov.rest.v1</packageName>-->
+<!--                                            <dateLibrary>java8</dateLibrary>-->
+<!--                                            <hideGenerationTimestamp>true</hideGenerationTimestamp>-->
+<!--                                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>-->
+<!--                                        </configOptions>-->
+<!--                                        <output>.</output>-->
+<!--                                        <skipOverwrite>false</skipOverwrite>-->
+<!--                                    </configuration>-->
+<!--                                </execution>-->
+<!--                            </executions>-->
+<!--                            <dependencies>-->
+<!--                                <dependency>-->
+<!--                                    <groupId>org.openapitools</groupId>-->
+<!--                                    <artifactId>cxf-wso2-openapi-generator</artifactId>-->
+<!--                                    <version>1.0.0</version>-->
+<!--                                </dependency>-->
+<!--                            </dependencies>-->
+<!--                        </plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/gen/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

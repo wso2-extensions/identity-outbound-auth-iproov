@@ -43,6 +43,20 @@
             <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.iproov.common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json.wso2</groupId>
+            <artifactId>json</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!--Test dependencies-->
         <dependency>
             <groupId>org.testng</groupId>
@@ -87,6 +101,8 @@
                             org.apache.http.client.utils; version="${httpcomponents-httpclient.imp.pkg.version.range}",
                             org.apache.http.message; version="${httpcore.version.osgi.import.range}",
                             org.apache.http.util; version="${httpcore.version.osgi.import.range}",
+                            org.apache.http.*; version="${httpcore.version.osgi.import.range}",
+                            org.json.*; version="${json.wso2.version.range}",
 
                             org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
                             org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",

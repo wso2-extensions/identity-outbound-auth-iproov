@@ -3,6 +3,8 @@ package org.wso2.carbon.identity.application.authenticator.iproov.common.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -23,7 +25,9 @@ import java.net.URISyntaxException;
  */
 public class IproovAuthorizationAPIClient {
 
-    public static IproovRegisteredUser getIproovRegisteredUser(String baseUrl, String tokenEndpoint, String clientId,
+    private static final Log LOG = LogFactory.getLog(IproovAuthorizationAPIClient.class);
+
+    public static IproovRegisteredUser getIproovRegisteredUser(String baseUrl, String apiKey, String clientId,
                                                                String clientSecret, String username)
             throws IproovAuthnFailedException {
 
@@ -32,7 +36,7 @@ public class IproovAuthorizationAPIClient {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(IproovAuthenticatorConstants.IPROOV_GET_USER_PATH + username);
 
-            HttpResponse response = IproovWebUtils.httpGet(uriBuilder.build(), tokenEndpoint, clientId, clientSecret);
+            HttpResponse response = IproovWebUtils.httpGet(uriBuilder.build(), baseUrl, apiKey, clientId, clientSecret);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
@@ -66,22 +70,22 @@ public class IproovAuthorizationAPIClient {
         }
     }
 
-    public static String getVerifyToken(String baseUrl, String apiKey, String secret, String userId, String clientId,
-                                        String clientSecret) throws IproovAuthnFailedException {
+    public static String getVerifyToken(String baseUrl, String apiKey, String secret, String userId)
+            throws IproovAuthnFailedException {
 
         try {
             // Get verify token: {{baseUrl}}/claim/verify/token
+            LOG.info(baseUrl);
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(IproovAuthenticatorConstants.IPROOV_VERIFY_TOKEN_PATH);
 
-            HttpResponse response = IproovWebUtils.httpPost(uriBuilder.build(),
-                    createTokenPayload(apiKey, secret, userId), clientId, clientSecret);
+            String payload =  createTokenPayload(apiKey, secret, userId);
+            HttpResponse response = IproovWebUtils.httpPost(uriBuilder.build(), payload, apiKey, secret);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
                 HttpEntity entity = response.getEntity();
                 String jsonString = EntityUtils.toString(entity);
-
                 JSONObject jsonObject = new JSONObject(jsonString);
                 return jsonObject.getString(IproovAuthenticatorConstants.TOKEN);
             } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
@@ -133,10 +137,11 @@ public class IproovAuthorizationAPIClient {
 
     private static String createTokenPayload(String apiKey, String secret, String userId) {
 
+        userId = "devtest2";
         JSONObject payload = new JSONObject();
 
-        payload.put(IproovAuthenticatorConstants.API_KEY, apiKey);
-        payload.put(IproovAuthenticatorConstants.SECRET, secret);
+        payload.put("api_key", apiKey);
+        payload.put("secret", secret);
         payload.put(IproovAuthenticatorConstants.RESOURCE, IproovAuthenticatorConstants.RESOURCE_VALUE);
         payload.put(IproovAuthenticatorConstants.ASSURANCE_TYPE, IproovAuthenticatorConstants.ASSURANCE_TYPE_VALUE);
         payload.put(IproovAuthenticatorConstants.USER_ID, userId);

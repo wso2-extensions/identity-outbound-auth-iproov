@@ -1,8 +1,10 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.common.web;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -17,17 +19,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovClientException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants.CLIENT_CREDENTIALS_GRANT_TYPE;
 
@@ -36,14 +37,19 @@ import static org.wso2.carbon.identity.application.authenticator.iproov.common.c
  */
 public class IproovWebUtils {
 
+    private static final Log LOG = LogFactory.getLog(IproovWebUtils.class);
     private IproovWebUtils() {
 
     }
-    public static HttpResponse httpGet(URI requestURL, String tokenEndpoint, String clientId, String clientSecret)
-            throws IOException, IproovClientException {
+
+    public static HttpResponse httpGet(URI requestURL, String baseUrl, String apiKey, String clientId,
+                                       String clientSecret) throws IOException, IproovClientException {
 
         HttpGet request = new HttpGet(requestURL);
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken(tokenEndpoint, clientId, clientSecret));
+        String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);
+        LOG.info("Access Token: " + accessToken);
+
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
         try (CloseableHttpResponse response = client.execute(request)) {
@@ -74,10 +80,11 @@ public class IproovWebUtils {
         return result;
     }
 
-    private static String getAccessToken(String tokenEndpoint, String clientId, String clientSecret) {
+    private static String getAccessToken(String baseUrl, String apiKey, String clientId, String clientSecret) {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().useSystemProperties().build()) {
 
+            String tokenEndpoint = baseUrl + "/" + apiKey + IproovAuthenticatorConstants.ACCESS_TOKEN_PATH;
             HttpPost httpPost = new HttpPost(tokenEndpoint);
             buildBasicAuthHeader(httpPost, clientId, clientSecret);
             List<BasicNameValuePair> urlParameters = new ArrayList<>();
@@ -89,14 +96,12 @@ public class IproovWebUtils {
                             StandardCharsets.UTF_8);
                     BufferedReader in = new BufferedReader(reader);
                     String json = in.readLine();
-
                     // Parse the Json response and retrieve the Access Token
                     Gson gson = new Gson();
-                    Type mapType = new TypeToken<Map<String, String>>() {
-                    }.getType();
-                    Map<String, String> tokenDetails = gson.fromJson(json, mapType);
+                    JsonObject tokenDetails = gson.fromJson(json, JsonObject.class);
                     in.close();
-                    return tokenDetails.get("access_token");
+                    LOG.info("Access Token Response: " + tokenDetails.get("access_token").toString());
+                    return tokenDetails.get("access_token").toString();
                 }
                 throw new IOException("Error occurred while retrieving the access token. Status code: " +
                         response.getStatusLine().getStatusCode());
