@@ -99,7 +99,8 @@ public class IproovAuthenticatorConstants {
     public static final String SESSION_DATA_KEY = "sessionDataKey";
     public static final String TENANT_DOMAIN = "tenantDomain";
     public static final String USERNAME = "username";
-
+    public static final String VERIFY_TOKEN = "verifyToken";
+    public static final String ENROLL_TOKEN = "enrollToken";
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String CORRELATION_ID_KEY = "Correlation-ID";
 
@@ -125,7 +126,9 @@ public class IproovAuthenticatorConstants {
     public static final String ACCESS_TOKEN_PATH = "/access_token";
     public static final String IPROOV_GET_USER_PATH = "/users/";
     public static final String IPROOV_VERIFY_TOKEN_PATH = "/api/v2/claim/verify/token";
-    public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/claim/verify/validate";
+    public static final String IPROOV_ENROLL_TOKEN_PATH = "/api/v2/claim/enrol/token";
+    public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/api/v2/claim/verify/validate";
+    public static final String IPROOV_ENROLL_VERIFICATION_PATH = "/api/v2/claim/enrol/validate";
 
     public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
 

@@ -3,11 +3,10 @@ package org.wso2.carbon.identity.application.authenticator.iproov.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.*;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.iproov.IproovAuthenticator;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Service component for the Iproov Authenticator.
@@ -46,6 +45,22 @@ public class IproovAuthenticatorServiceComponent {
         if (log.isDebugEnabled()) {
             log.debug("Iproov Authenticator bundle is deactivated");
         }
+    }
+
+    @Reference(
+            name = "RealmService",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService")
+    protected void setRealmService(RealmService realmService) {
+
+        IproovAuthenticatorDataHolder.setRealmService(realmService);
+    }
+
+    protected void unsetRealmService(RealmService realmService) {
+
+        IproovAuthenticatorDataHolder.setRealmService(null);
     }
 
 }
