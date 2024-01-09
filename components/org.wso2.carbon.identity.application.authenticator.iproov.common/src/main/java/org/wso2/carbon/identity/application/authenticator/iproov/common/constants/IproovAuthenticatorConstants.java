@@ -26,7 +26,6 @@ public class IproovAuthenticatorConstants {
         IPROOV_OAUTH_USERNAME_INVALID_FAILURE("65011", "Provided iProov oauth username is invalid."),
         IPROOV_OAUTH_PASSWORD_INVALID_FAILURE("65012", "Provided iProov oauth password is invalid."),
 
-
         SERVER_ERROR_INVALID_AUTHENTICATION_PROPERTIES("65013",
                 "Invalid authenticator configurations or no user found."),
         SERVER_ERROR_CREATING_HTTP_CLIENT("65014", "Error while creating http client.",

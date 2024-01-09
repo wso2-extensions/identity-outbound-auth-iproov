@@ -192,7 +192,6 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             }
             String iproovLoginPageURL = iproovLoginPageURLBuilder.build().getAbsolutePublicURL();
             response.sendRedirect(iproovLoginPageURL);
-
         } catch (IOException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE, e);
@@ -208,45 +207,31 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             LogoutFailedException {
 
         if (context.isLogoutRequest()) {
-            // if the logout request comes, then no need to go through and complete the flow.
             return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
-
         } else if (request.getParameterMap().containsKey(IproovAuthenticatorConstants.USERNAME)) {
-            // if the login form submission request comes, then go through this flow.
             initiateIproovAuthenticationRequest(request, response, context);
             return AuthenticatorFlowStatus.INCOMPLETE;
-
         } else if (context.getProperty(IproovAuthenticatorConstants.AUTH_STATUS) != null) {
-            // if intermediate authentication request comes, then go through this flow.
             String authStatus = (String) context.getProperty(IproovAuthenticatorConstants.AUTH_STATUS);
 
             if (IproovAuthenticatorConstants.AuthenticationStatus.COMPLETED.getName().equals(authStatus)) {
                 processAuthenticationResponse(request, response, context);
                 return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
-
-            } else if (IproovAuthenticatorConstants.AuthenticationStatus.PENDING.getName().equals(authStatus)) {
-                redirectIproovLoginPage(response, context, IproovAuthenticatorConstants.AuthenticationStatus.PENDING,
-                        null);
-                return AuthenticatorFlowStatus.INCOMPLETE;
-
-            } else if (IproovAuthenticatorConstants.AuthenticationStatus.CANCELED.getName().equals(authStatus)) {
-                redirectIproovLoginPage(response, context, IproovAuthenticatorConstants.AuthenticationStatus.CANCELED,
-                        null);
-                return AuthenticatorFlowStatus.INCOMPLETE;
-
-            } else if (IproovAuthenticatorConstants.AuthenticationStatus.FAILED.getName().equals(authStatus)) {
-                redirectIproovLoginPage(response, context, IproovAuthenticatorConstants.AuthenticationStatus.FAILED,
-                        null);
+            } else if (IproovAuthenticatorConstants.AuthenticationStatus.PENDING.getName().equals(authStatus)
+                    || IproovAuthenticatorConstants.AuthenticationStatus.CANCELED.getName().equals(authStatus)
+                    || IproovAuthenticatorConstants.AuthenticationStatus.FAILED.getName().equals(authStatus)) {
+                redirectIproovLoginPage(response, context,
+                        IproovAuthenticatorConstants.AuthenticationStatus.valueOf(authStatus), null);
                 return AuthenticatorFlowStatus.INCOMPLETE;
             }
         } else {
             if (context.getLastAuthenticatedUser() != null) {
-                // If the user is already authenticated, initiate iProov authentication request.
+                if (isAuthenticationOrEnrollmentVerificationRequest(request)) {
+                    processAuthenticationResponse(request, response, context);
+                    return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
+                }
                 initiateIproovAuthenticationRequest(request, response, context);
-            } else if (IproovAuthenticatorConstants.Verification.AUTHENTICATION.equals(request.getParameter(
-                    "scenario")) || IproovAuthenticatorConstants.Verification.ENROLLMENT.equals(
-                            request.getParameter("scenario"))) {
-                // If the user is not authenticated, redirect to the iProov login page to prompt username.
+            } else if (isAuthenticationOrEnrollmentVerificationRequest(request)) {
                 processAuthenticationResponse(request, response, context);
                 return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
             } else {
@@ -254,8 +239,14 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             }
             return AuthenticatorFlowStatus.INCOMPLETE;
         }
-
         return super.process(request, response, context);
+    }
+
+    // Helper method
+    private boolean isAuthenticationOrEnrollmentVerificationRequest(HttpServletRequest request) {
+
+        return IproovAuthenticatorConstants.Verification.AUTHENTICATION.equals(request.getParameter("scenario"))
+                || IproovAuthenticatorConstants.Verification.ENROLLMENT.equals(request.getParameter("scenario"));
     }
 
     @SuppressWarnings(value = "CRLF_INJECTION_LOGS", justification = "username should be sanitized at this point.")
