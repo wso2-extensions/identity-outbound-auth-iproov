@@ -1,8 +1,5 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.common.web;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -14,10 +11,8 @@ import org.json.JSONObject;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovClientException;
-import org.wso2.carbon.identity.application.authenticator.iproov.common.model.IproovRegisteredUser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
 /**
@@ -27,55 +22,10 @@ public class IproovAuthorizationAPIClient {
 
     private static final Log LOG = LogFactory.getLog(IproovAuthorizationAPIClient.class);
 
-    public static IproovRegisteredUser getIproovRegisteredUser(String baseUrl, String apiKey, String clientId,
-                                                               String clientSecret, String username)
-            throws IproovAuthnFailedException {
-
-        try {
-            // Get user API: {{baseUrl}}/users/{{username}}
-            URIBuilder uriBuilder = new URIBuilder(baseUrl);
-            uriBuilder.setPath(IproovAuthenticatorConstants.IPROOV_GET_USER_PATH + username);
-
-            HttpResponse response = IproovWebUtils.httpGet(uriBuilder.build(), baseUrl, apiKey, clientId, clientSecret);
-
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
-                Gson gson = new GsonBuilder().create();
-                HttpEntity entity = response.getEntity();
-                String jsonString = EntityUtils.toString(entity);
-
-                Type type = new TypeToken<IproovRegisteredUser>() {
-                }.getType();
-
-                return new IproovRegisteredUser(gson.fromJson(jsonString, type));
-            } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
-                throw getIproovAuthnFailedException(
-                        IproovAuthenticatorConstants.ErrorMessages.SERVER_ERROR_INVALID_AUTHENTICATION_PROPERTIES);
-            } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-                throw getIproovAuthnFailedException(
-                        IproovAuthenticatorConstants.ErrorMessages.IPROOV_ACCESS_TOKEN_INVALID_FAILURE);
-            } else {
-                throw getIproovAuthnFailedException(
-                        IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_REG_USER_FAILURE);
-            }
-        } catch (URISyntaxException e) {
-            throw getIproovAuthnFailedException(
-                    IproovAuthenticatorConstants.ErrorMessages.IPROOV_BASE_URL_INVALID_FAILURE, e);
-        } catch (IproovClientException e) {
-            throw getIproovAuthnFailedException(
-                    IproovAuthenticatorConstants.ErrorMessages.SERVER_ERROR_CREATING_HTTP_CLIENT, e);
-        } catch (IOException e) {
-            throw getIproovAuthnFailedException(
-                    IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_REG_USER_FAILURE, e);
-        }
-    }
-
     public static String getToken(String baseUrl, String tokenPath, String apiKey, String secret, String userId)
             throws IproovAuthnFailedException {
 
         try {
-            // Get verify token: {{baseUrl}}/claim/verify/token
-            LOG.info(baseUrl);
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(tokenPath);
 
@@ -87,7 +37,7 @@ public class IproovAuthorizationAPIClient {
                 HttpEntity entity = response.getEntity();
                 String jsonString = EntityUtils.toString(entity);
                 JSONObject jsonObject = new JSONObject(jsonString);
-                return jsonObject.getString(IproovAuthenticatorConstants.TOKEN);
+                return jsonObject.getString(IproovAuthenticatorConstants.PayloadConstants.TOKEN);
             } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
                 throw getIproovAuthnFailedException(
                         IproovAuthenticatorConstants.ErrorMessages.SERVER_ERROR_INVALID_AUTHENTICATION_PROPERTIES);
@@ -114,8 +64,6 @@ public class IproovAuthorizationAPIClient {
                                               String token) {
 
         try {
-
-            // Validate verification: {{baseUrl}}/claim/verify/validate
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(tokenPath);
 
@@ -140,11 +88,13 @@ public class IproovAuthorizationAPIClient {
 
         JSONObject payload = new JSONObject();
 
-        payload.put("api_key", apiKey);
-        payload.put("secret", secret);
-        payload.put(IproovAuthenticatorConstants.RESOURCE, IproovAuthenticatorConstants.RESOURCE_VALUE);
-        payload.put(IproovAuthenticatorConstants.ASSURANCE_TYPE, IproovAuthenticatorConstants.ASSURANCE_TYPE_VALUE);
-        payload.put(IproovAuthenticatorConstants.USER_ID, userId);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.API_KEY, apiKey);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.API_SECRET, secret);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.RESOURCE,
+                IproovAuthenticatorConstants.PayloadConstants.RESOURCE_VALUE);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.ASSURANCE_TYPE,
+                IproovAuthenticatorConstants.PayloadConstants.ASSURANCE_TYPE_VALUE);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.USER_ID, userId);
 
         return payload.toString();
     }
@@ -153,12 +103,11 @@ public class IproovAuthorizationAPIClient {
 
         JSONObject payload = new JSONObject();
 
-        payload.put("api_key", apiKey);
-        payload.put("secret", secret);
-        payload.put(IproovAuthenticatorConstants.USER_ID, userId);
-        payload.put(IproovAuthenticatorConstants.TOKEN, token);
-        payload.put(IproovAuthenticatorConstants.CLIENT, IproovAuthenticatorConstants.CLIENT_VALUE);
-//        payload.put(IproovAuthenticatorConstants.RISK_PROFILE, IproovAuthenticatorConstants.RISK_PROFILE_VALUE);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.API_KEY, apiKey);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.API_SECRET, secret);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.USER_ID, userId);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.TOKEN, token);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.CLIENT, IproovAuthenticatorConstants.PayloadConstants.CLIENT_VALUE);
 
         return payload.toString();
     }

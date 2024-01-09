@@ -94,42 +94,96 @@ public class IproovAuthenticatorConstants {
         }
     }
 
-    public static final String AUTHENTICATOR_NAME = "IproovAuthenticator";
-    public static final String AUTHENTICATOR_FRIENDLY_NAME = "Iproov";
+    public static class Verification {
+
+            public static final String AUTHENTICATION = "authentication";
+            public static final String ENROLLMENT = "enrollment";
+    }
+
+    public enum ConfigProperties {
+        BASE_URL(1, "baseUrl", "Base URL",
+                "Enter the base URL of your iProov server deployment."),
+        OAUTH_USERNAME(2, "oauthUsername", "OAuth Username",
+                "Enter the OAuth username of your iProov server deployment."),
+        OAUTH_PASSWORD(3, "oauthPassword", "OAuth Password",
+        "Enter the OAuth password of your iProov server deployment."),
+        API_KEY(4, "apiKey", "API Key",
+                "Enter the API key of your iProov server deployment."),
+        API_SECRET(5, "apiSecret", "API Secret",
+                "Enter the API secret of your iProov server deployment."),
+        ;
+        private final int displayOrder;
+
+        private final String name;
+        private final String displayName;
+        private final String description;
+
+        ConfigProperties(int displayOrder, String name, String displayName, String description) {
+
+            this.displayOrder = displayOrder;
+            this.name = name;
+            this.displayName = displayName;
+            this.description = description;
+        }
+
+        public int getDisplayOrder() {
+
+            return displayOrder;
+        }
+
+        public String getName() {
+
+            return name;
+        }
+
+        public String getDisplayName() {
+
+            return displayName;
+        }
+
+        public String getDescription() {
+
+            return description;
+        }
+    }
+
+    public static class PayloadConstants {
+
+        public static final String API_KEY = "api_key";
+        public static final String API_SECRET = "secret";
+        public static final String USER_ID = "user_id";
+        public static final String RESOURCE = "resource";
+        public static final String ASSURANCE_TYPE = "assurance_type";
+        public static final String TOKEN = "token";
+        public static final String CLIENT = "client";
+        public static final String RESOURCE_VALUE = "URL";
+        public static final String ASSURANCE_TYPE_VALUE = "genuine_presence";
+        public static final String CLIENT_VALUE = "User Agent";
+    }
+
+    public static class TokenEndpoints {
+
+        public static final String ACCESS_TOKEN_PATH = "/access_token";
+        public static final String IPROOV_VERIFY_TOKEN_PATH = "/api/v2/claim/verify/token";
+        public static final String IPROOV_ENROLL_TOKEN_PATH = "/api/v2/claim/enrol/token";
+        public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/api/v2/claim/verify/validate";
+        public static final String IPROOV_ENROLL_VERIFICATION_PATH = "/api/v2/claim/enrol/validate";
+    }
+
     public static final String SESSION_DATA_KEY = "sessionDataKey";
+    public static final String AUTHENTICATOR_NAME = "AuthenticatorName";
+
+    public static final String AUTHENTICATOR_NAME_VALUE = "IproovAuthenticator";
+    public static final String AUTHENTICATOR_FRIENDLY_NAME_VALUE = "Iproov";
     public static final String TENANT_DOMAIN = "tenantDomain";
     public static final String USERNAME = "username";
     public static final String VERIFY_TOKEN = "verifyToken";
     public static final String ENROLL_TOKEN = "enrollToken";
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String CORRELATION_ID_KEY = "Correlation-ID";
-
-    public static final String BASE_URL = "baseUrl";
-    public static final String API_KEY = "apiKey";
-    public static final String SECRET = "apiSecret";
-    public static final String OAUTH_USERNAME = "oauthUsername";
-    public static final String OAUTH_PASSWORD = "oauthPassword";
-    public static final String USER_ID = "user_id";
-    public static final String RESOURCE = "resource";
-    public static final String ASSURANCE_TYPE = "assurance_type";
-    public static final String TOKEN = "token";
-    public static final String CLIENT = "client";
-    public static final String RISK_PROFILE = "risk_profile";
     public static final String VERIFICATION_STATUS = "passed";
-
-    public static final String RESOURCE_VALUE = "URL";
-    public static final String ASSURANCE_TYPE_VALUE = "genuine_presence";
-    public static final String CLIENT_VALUE = "User Agent";
-    public static final String RISK_PROFILE_VALUE = "low";
-
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
-    public static final String ACCESS_TOKEN_PATH = "/access_token";
-    public static final String IPROOV_GET_USER_PATH = "/users/";
-    public static final String IPROOV_VERIFY_TOKEN_PATH = "/api/v2/claim/verify/token";
-    public static final String IPROOV_ENROLL_TOKEN_PATH = "/api/v2/claim/enrol/token";
-    public static final String IPROOV_VALIDATE_VERIFICATION_PATH = "/api/v2/claim/verify/validate";
-    public static final String IPROOV_ENROLL_VERIFICATION_PATH = "/api/v2/claim/enrol/validate";
-
+    public static final String IPROOV_ENROLLED_CLAIM = "http://wso2.org/claims/iproovEnrolled";
     public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
 
     // REST API Parameters

@@ -84,7 +84,8 @@ public class IproovWebUtils {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().useSystemProperties().build()) {
 
-            String tokenEndpoint = baseUrl + "/" + apiKey + IproovAuthenticatorConstants.ACCESS_TOKEN_PATH;
+            String tokenEndpoint = baseUrl + "/" + apiKey +
+                    IproovAuthenticatorConstants.TokenEndpoints.ACCESS_TOKEN_PATH;
             HttpPost httpPost = new HttpPost(tokenEndpoint);
             buildBasicAuthHeader(httpPost, clientId, clientSecret);
             List<BasicNameValuePair> urlParameters = new ArrayList<>();
