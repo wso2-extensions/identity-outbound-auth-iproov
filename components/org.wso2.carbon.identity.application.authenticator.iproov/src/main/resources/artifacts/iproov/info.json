@@ -1,0 +1,10 @@
+{
+  "id": "iproov-idp",
+  "name": "iProov",
+  "description": "Enable login for users with existing iProov accounts.",
+  "image": "assets/images/logos/hypr.svg",
+  "category": "DEFAULT",
+  "displayOrder": 7,
+  "tags": [ "Social-Login" ],
+  "type": "identity-provider"
+}

@@ -1,0 +1,277 @@
+{
+  "create": {
+    "image": "assets/images/logos/hypr.svg",
+    "header": "iProov",
+    "Subheading": "Enable login for users with existing iProov profiles.",
+    "documentation": "{ENV}/asgardeo/docs/guides/authentication/#manage-connections",
+    "modal": {
+      "form": {
+        "fields": [
+          {
+            "index": 0,
+            "ariaLabel": "iProov IDP Name",
+            "name": "name",
+            "label": "Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "Enter a name for the connection.",
+            "initialValue": "iProov",
+            "data-testid": "iproov-idp-create-wizard-page-idp-name",
+            "maxLength": "50",
+            "minLength": "3",
+            "width": "13"
+          },
+          {
+            "index": 1,
+            "ariaLabel": "iProov Base URL",
+            "type": "text",
+            "name": "baseUrl",
+            "label": "Base URL",
+            "placeholder": "Enter iProov server base URL",
+            "required": true,
+            "autoComplete": false,
+            "data-testid": "iproov-idp-create-wizard-page-idp-base-url",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
+          },
+          {
+            "index": 2,
+            "ariaLabel": "OAuth Username",
+            "type": "text",
+            "name": "oauthUsername",
+            "label": "OAuth Username",
+            "placeholder": "Enter OAuth username from iProov application.",
+            "required": true,
+            "autoComplete": false,
+            "data-testid": "iproov-idp-create-wizard-page-idp-oauthUsername",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
+          },
+          {
+            "index": 3,
+            "className": "addon-field-wrapper",
+            "ariaLabel": "OAuth Password",
+            "type": "password",
+            "name": "oauthPassword",
+            "label": "OAuth Password",
+            "placeholder": "Enter OAuth username from iProov application.",
+            "required": true,
+            "autoComplete": false,
+            "testId": "iproov-idp-create-wizard-page-idp-oauthPassword",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
+          },
+          {
+            "index": 4,
+            "className": "addon-field-wrapper",
+            "ariaLabel": "API Key",
+            "type": "text",
+            "name": "apiKey",
+            "label": "API Key",
+            "placeholder": "Enter API Key from iProov application.",
+            "required": true,
+            "autoComplete": false,
+            "testId": "iproov-idp-create-wizard-page-idp-apiKey",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
+          },
+          {
+            "index": 5,
+            "className": "addon-field-wrapper",
+            "ariaLabel": "API Secret",
+            "type": "secret",
+            "name": "apiSecret",
+            "label": "API Secret",
+            "placeholder": "Enter API Secret from iProov application.",
+            "required": true,
+            "autoComplete": false,
+            "testId": "iproov-idp-create-wizard-page-idp-apiSecret",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
+          }
+        ]
+
+      },
+      "wizardHelp": {
+        "message": {
+          "header": "Prerequites",
+          "paragraphs": [
+            "HELP!!!!"
+          ]
+        },
+        "fields": [
+          {
+            "fieldName": "Name",
+            "hint": "Provide a unique name for the connection."
+          },
+          {
+            "fieldName": "Base URL",
+            "hint": "Provide the <Code class=\"inline-code\">Base URL</Code> of your HYPR server deployment."
+          },
+          {
+            "fieldName": "OAuth Username",
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Username</Code> of the application registered in the iPortal."
+          },
+          {
+            "fieldName": "OAuth Password",
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Password</Code> of the application registered in the iPortal."
+          },
+          {
+            "fieldName": "API Key",
+            "hint": "Provide the <Code class=\"inline-code\">API Key</Code> of the application registered in the iPortal."
+          },
+          {
+            "fieldName": "API Secret",
+            "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> of the application registered in the iPortal."
+          }
+        ]
+      }
+    },
+    "properties": [
+      {
+        "key": "baseUrl",
+        "value": ""
+      },
+      {
+        "key": "oauthUsername",
+        "value": ""
+      },
+      {
+        "key": "oauthPassword",
+        "value": ""
+      },
+      {
+        "key": "apiKey",
+        "value": ""
+      },
+      {
+        "key": "apiSecret",
+        "value": ""
+      }
+    ]
+  },
+  "edit" : {
+    "tabs": {
+      "general" : [
+        {
+          "index": 1,
+          "displayOrder" : 2,
+          "type": "textarea",
+          "name" : "description",
+          "ariaLabel" : "description",
+          "label" : "Description",
+          "required": false,
+          "placeholder": "Enter a description of the identity provider.",
+          "value": "",
+          "data-testid": "idp-edit-page-general-settings-form-idp-description",
+          "maxLength": "300",
+          "minLength": "3",
+          "hint": "A text description of the identity provider.",
+          "readOnly": false
+        },
+        {
+          "index": 2,
+          "displayOrder" : 3,
+          "name": "jwks_endpoint",
+          "ariaLabel": "JWKS Endpoint URL",
+          "inputType": "url",
+          "type": "text",
+          "label": "JWKS Endpoint URL",
+          "required": true,
+          "placeholder": "https://{ oauth-provider-url }/oauth/jwks",
+          "value": "",
+          "data-testid": "",
+          "maxLength": "2048",
+          "minLength": "10",
+          "hint": "A JSON Web Key (JWK) Set is a JSON object that represents a set of JWKs. The JSON object MUST have a keys member, with its value being an array of JWKs.",
+          "readOnly": false
+        },
+        {
+          "index": 3,
+          "displayOrder" : 4,
+          "type": "certbox",
+          "isJWKSEnabled": "",
+          "isReadOnly": "",
+          "editingIDP": "",
+          "onUpdate": "",
+          "isPEMEnabled": ""
+        }
+      ],
+      "settings" : [
+        {
+          "index": 4,
+          "displayOrder" : 4,
+          "label": "Base URL",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-baseUrl",
+          "name": "baseUrl",
+          "required": true,
+          "type": "text",
+          "hint": "Enter OAuth username from iProov application.",
+          "validation": true
+        },
+        {
+          "index": 5,
+          "displayOrder" : 5,
+          "label": "OAuth Username",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthUsername",
+          "name": "oauthUsername",
+          "required": true,
+          "type": "text",
+          "hint": "Enter OAuth username from iProov application.",
+          "validation": true
+        },
+        {
+          "index": 6,
+          "displayOrder" : 6,
+          "label": "OAuth Password",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
+          "name": "oauthPassword",
+          "required": true,
+          "type": "text",
+          "hint": "Enter OAuth password from iProov application.",
+          "validation": true
+        },
+        {
+          "index": 7,
+          "displayOrder" : 7,
+          "label": "OAuth Password",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
+          "name": "oauthPassword",
+          "required": true,
+          "type": "text",
+          "hint": "Enter OAuth username from iProov application.",
+          "validation": true
+        },
+        {
+          "index": 8,
+          "displayOrder" : 8,
+          "label": "apiKey",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiKey",
+          "name": "apiKey",
+          "required": true,
+          "type": "text",
+          "hint": "Enter API key from iProov application.",
+          "validation": true
+        },
+        {
+          "index": 9,
+          "displayOrder" : 9,
+          "label": "apiSecret",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiSecret",
+          "name": "apiSecret",
+          "required": true,
+          "type": "text",
+          "hint": "Enter API secret from iProov application.",
+          "validation": true
+        }
+      ],
+      "quickStart": "iproov"
+    }
+
+  }
+}
