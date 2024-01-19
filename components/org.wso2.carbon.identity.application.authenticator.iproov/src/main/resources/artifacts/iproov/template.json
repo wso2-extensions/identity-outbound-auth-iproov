@@ -3,7 +3,7 @@
   "name": "iProov",
   "description": "Enable login for users with existing iProov registrations.",
   "docLink": "/guides/authentication/#manage-connections",
-  "image": "assets/images/logos/hypr.svg",
+  "image": "assets/images/logos/iproov.svg",
   "category": "DEFAULT",
   "displayOrder": 7,
   "services": [],
@@ -34,10 +34,10 @@
       "outboundProvisioningRoles": []
     },
     "federatedAuthenticators": {
-      "defaultAuthenticatorId": "SFlQUkF1dGhlbnRpY2F0b3I",
+      "defaultAuthenticatorId": "SXByb292QXV0aGVudGljYXRvcg",
       "authenticators": [
         {
-          "authenticatorId": "SFlQUkF1dGhlbnRpY2F0b3I",
+          "authenticatorId": "SXByb292QXV0aGVudGljYXRvcg",
           "isEnabled": true,
           "properties": [
             {

@@ -1,6 +1,6 @@
 {
   "create": {
-    "image": "assets/images/logos/hypr.svg",
+    "image": "assets/images/logos/iproov.svg",
     "header": "iProov",
     "Subheading": "Enable login for users with existing iProov profiles.",
     "documentation": "{ENV}/asgardeo/docs/guides/authentication/#manage-connections",
@@ -101,7 +101,7 @@
         "message": {
           "header": "Prerequites",
           "paragraphs": [
-            "HELP!!!!"
+            "iProov helps you to authenticate users using their face. To use iProov, you need to have an iProov account. If you do not have an account, you can create one at <Link>https://www.iproov.com/</Link>.",
           ]
         },
         "fields": [
