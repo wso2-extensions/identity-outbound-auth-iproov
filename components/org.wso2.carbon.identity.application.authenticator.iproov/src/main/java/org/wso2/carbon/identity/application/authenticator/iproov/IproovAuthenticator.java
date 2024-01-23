@@ -11,6 +11,7 @@ import org.wso2.carbon.identity.application.authentication.framework.config.mode
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.LogoutFailedException;
+import org.wso2.carbon.identity.application.authentication.framework.exception.UserIdNotFoundException;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
@@ -71,26 +72,35 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
 
     private Property getProperty(IproovAuthenticatorConstants.ConfigProperties configProperties) {
 
-            Property property = new Property();
-            property.setName(configProperties.getName());
-            property.setDisplayName(configProperties.getDisplayName());
-            property.setDescription(configProperties.getDescription());
-            property.setDisplayOrder(configProperties.getDisplayOrder());
-            property.setRequired(true);
-            return property;
+        Property property = new Property();
+        property.setName(configProperties.getName());
+        property.setDisplayName(configProperties.getDisplayName());
+        property.setDescription(configProperties.getDescription());
+        property.setDisplayOrder(configProperties.getDisplayOrder());
+        property.setRequired(true);
+        return property;
     }
 
     @Override
     protected void processAuthenticationResponse(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) {
 
+        String userId = null;
         String username = (String) context.getProperty(IproovAuthenticatorConstants.USERNAME);
-
+        try {
+            userId = getAuthenticatedUserFromContext(context);
+        } catch (AuthenticationFailedException e) {
+            throw new RuntimeException(e);
+        }
         // Extract the IProov configurations.
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String baseUrl = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.BASE_URL.getName());
         String apiKey = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.API_KEY.getName());
         String apiSecret = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.API_SECRET.getName());
+        String oauthUsername = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties
+                .OAUTH_USERNAME.getName());
+        String oauthPassword = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.OAUTH_PASSWORD
+                .getName());
 
         String verificationMode = request.getParameter("scenario");
         String isValidated;
@@ -98,12 +108,16 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             String verifyToken = (String) context.getProperty(IproovAuthenticatorConstants.VERIFY_TOKEN);
             isValidated = IproovAuthorizationAPIClient.validateVerification(baseUrl,
                     IproovAuthenticatorConstants.TokenEndpoints.IPROOV_VALIDATE_VERIFICATION_PATH, apiKey, apiSecret,
-                    username, verifyToken);
+                    userId, verifyToken);
         } else {
             String enrollToken = (String) context.getProperty(IproovAuthenticatorConstants.ENROLL_TOKEN);
             isValidated = IproovAuthorizationAPIClient.validateVerification(baseUrl,
                     IproovAuthenticatorConstants.TokenEndpoints.IPROOV_ENROLL_VERIFICATION_PATH, apiKey, apiSecret,
-                    username, enrollToken);
+                    userId, enrollToken);
+            if (!Boolean.parseBoolean(isValidated)) {
+                IproovAuthorizationAPIClient.removeIproovUserProfile(baseUrl, apiKey, oauthUsername, oauthPassword,
+                        userId);
+            }
         }
 
         //Set the authenticated user.
@@ -125,9 +139,8 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         } else {
             throw new RuntimeException("Iproov authentication failed");
         }
-
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Successfully logged in the user " + username);
+            LOG.debug("Successfully logged in the user " + userId);
         }
     }
 
@@ -253,24 +266,33 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
     private void initiateIproovAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                      AuthenticationContext context) throws AuthenticationFailedException {
 
+        String userId = null;
         String username = null;
         if (context.getSequenceConfig() != null) {
             Map<Integer, StepConfig> stepConfigMap = context.getSequenceConfig().getStepMap();
-            // loop through the authentication steps and find the authenticated user from the subject identifier step.
+            // Loop through the authentication steps and find the authenticated user from the subject identifier step.
             if (stepConfigMap != null) {
                 for (StepConfig stepConfig : stepConfigMap.values()) {
                     if (stepConfig.isSubjectIdentifierStep() && stepConfig.getAuthenticatedUser() != null) {
-                        username = stepConfig.getAuthenticatedUser().getUserName();
+                        try {
+                            userId = stepConfig.getAuthenticatedUser().getUserId();
+                            username = stepConfig.getAuthenticatedUser().getUserName();
+                        } catch (UserIdNotFoundException e) {
+                            throw new IproovAuthnFailedException(
+                                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
+                                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage(), e);
+                        }
+                        LOG.info("User ID: " + userId + " is authenticated with iProov.");
                         break;
                     }
                 }
             }
         }
-
-        if (StringUtils.isEmpty(username)) {
-            username = request.getParameter(IproovAuthenticatorConstants.USERNAME);
+        if (userId == null) {
+            throw new IproovAuthnFailedException(
+                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
+                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage());
         }
-
         // Extract the IProov configurations.
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String baseUrl = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.BASE_URL.getName());
@@ -280,7 +302,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         String oauthPassword = authenticatorProperties.get(IproovAuthenticatorConstants.ConfigProperties.OAUTH_PASSWORD.getName());
 
         // Validate username and the iProov configurable parameters.
-        if (StringUtils.isBlank(username)) {
+        if (StringUtils.isBlank(userId)) {
             redirectIproovLoginPage(response, context,
                     IproovAuthenticatorConstants.AuthenticationStatus.INVALID_REQUEST, null);
             return;
@@ -290,29 +312,27 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         String verifyToken = null;
         String enrollToken = null;
         try {
-            if (isIproovUserExist(username, context)) {
-
+            if (isIproovUserExist(userId, username, context)) {
                 verifyToken = IproovAuthorizationAPIClient.getToken(baseUrl,
                         IproovAuthenticatorConstants.TokenEndpoints.IPROOV_VERIFY_TOKEN_PATH, apiKey, apiSecret,
-                        username);
+                        userId);
                 response.sendRedirect(ServiceURLBuilder.create().addPath(
-                                "/authenticationendpoint/iproovlogin.jsp")
+                                IproovAuthenticatorConstants.IPROOV_LOGIN_PAGE)
                         .addParameter(IproovAuthenticatorConstants.VERIFY_TOKEN,
                                 verifyToken).build().getAbsolutePublicURL());
             } else {
-
                 enrollToken = IproovAuthorizationAPIClient.getToken(baseUrl,
                         IproovAuthenticatorConstants.TokenEndpoints.IPROOV_ENROLL_TOKEN_PATH, apiKey, apiSecret,
-                        username);
+                        userId);
                 response.sendRedirect(ServiceURLBuilder.create().addPath(
-                                "/authenticationendpoint/iproovlogin.jsp")
+                                IproovAuthenticatorConstants.IPROOV_LOGIN_PAGE)
                         .addParameter(IproovAuthenticatorConstants.ENROLL_TOKEN,
                                 enrollToken).build().getAbsolutePublicURL());
             }
 
+            context.setProperty(IproovAuthenticatorConstants.USER_ID, userId);
             context.setProperty(IproovAuthenticatorConstants.USERNAME, username);
-//
-//            // Inform the user that the push notification has been sent to the registered device.
+
             Map<String, String> queryParams = new HashMap<>();
             if (verifyToken != null) {
                 context.setProperty(IproovAuthenticatorConstants.VERIFY_TOKEN, verifyToken);
@@ -340,17 +360,48 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         }
     }
 
-    private boolean isIproovUserExist(String username, AuthenticationContext context) throws
+    private String getAuthenticatedUserFromContext(AuthenticationContext context) throws IproovAuthnFailedException {
+
+        String userId = null;
+        if (context.getSequenceConfig() != null) {
+            Map<Integer, StepConfig> stepConfigMap = context.getSequenceConfig().getStepMap();
+            // Loop through the authentication steps and find the authenticated user from the subject identifier step.
+            if (stepConfigMap != null) {
+                for (StepConfig stepConfig : stepConfigMap.values()) {
+                    if (stepConfig.isSubjectIdentifierStep() && stepConfig.getAuthenticatedUser() != null) {
+                        try {
+                            userId = stepConfig.getAuthenticatedUser().getUserId();
+                        } catch (UserIdNotFoundException e) {
+                           throw new IproovAuthnFailedException(
+                                   IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
+                                   IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage(), e);
+                        }
+                        LOG.info("User ID: " + userId + " is authenticated with iProov.");
+                        break;
+                    }
+                }
+            }
+        }
+        if (userId != null) {
+            return userId;
+        } else {
+            throw new IproovAuthnFailedException(
+                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
+                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage());
+        }
+    }
+
+    private boolean isIproovUserExist(String userId, String username, AuthenticationContext context) throws
             AuthenticationFailedException, UserStoreException {
 
         String tenantDomain = context.getTenantDomain();
 
         AuthenticatedUser authenticatedUser = new AuthenticatedUser();
-        authenticatedUser.setUserName(username);
+        authenticatedUser.setUserId(userId);
         authenticatedUser.setTenantDomain(tenantDomain);
+        authenticatedUser.setUserName(username);
 
-        String isIproovEnrolled = isUserIproovEnrolled(authenticatedUser, tenantDomain, context,
-                false);
+        String isIproovEnrolled = isUserIproovEnrolled(authenticatedUser, context, false);
         return Boolean.parseBoolean(isIproovEnrolled);
     }
 
@@ -358,29 +409,25 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
      * Resolve the mobile number of the authenticated user.
      *
      * @param user                       Authenticated user.
-     * @param tenantDomain               Application tenant domain.
      * @param context                    AuthenticationContext.
      * @param isInitialFederationAttempt Whether auth attempt by a not JIT provisioned federated user.
      * @return Mobile number of the authenticated user.
      * @throws AuthenticationFailedException If an error occurred while resolving the mobile number.
      */
-    private String isUserIproovEnrolled(AuthenticatedUser user, String tenantDomain,
-                                        AuthenticationContext context, boolean isInitialFederationAttempt)
+    private String isUserIproovEnrolled(AuthenticatedUser user, AuthenticationContext context,
+                                        boolean isInitialFederationAttempt)
             throws AuthenticationFailedException, UserStoreException {
 
         String isUserIproovEnrolled = null;
         if (isInitialFederationAttempt) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("Getting the mobile number of the initially federating user: %s",
-                        user.getUserName()));
+                LOG.debug("Federated Authentication Attempt.");
             }
-//            mobile = getMobileNoForFederatedUser(user, tenantDomain, context);
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("Getting the mobile number of the local user: %s in user store: %s in " +
-                        "tenant: %s", user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain()));
+                LOG.debug("Non-Federated Authentication Attempt.");
             }
-            isUserIproovEnrolled = getUserClaimValueFromUserStore(user, context);
+            isUserIproovEnrolled = getUserClaimValueFromUserStore(user);
         }
         return isUserIproovEnrolled;
     }
@@ -392,7 +439,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
      * @return User claim value.
      * @throws AuthenticationFailedException If an error occurred while getting the claim value.
      */
-    private String getUserClaimValueFromUserStore(AuthenticatedUser authenticatedUser , AuthenticationContext context)
+    private String getUserClaimValueFromUserStore(AuthenticatedUser authenticatedUser)
             throws AuthenticationFailedException, UserStoreException {
 
         UserStoreManager userStoreManager = getUserStoreManager(authenticatedUser);
@@ -403,10 +450,11 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                             new String[]{IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM}, null);
             return claimValues.get(IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM);
         } catch (UserStoreException e) {
-            // User not found exception
-            throw new UserStoreException();
+            throw new IproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
+                    IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage(), e);
         }
     }
+
     /**
      * Get UserStoreManager for the given user.
      *
@@ -426,6 +474,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             if (StringUtils.isBlank(userStoreDomain) || PRIMARY_DEFAULT_DOMAIN_NAME.equals(userStoreDomain)) {
                 return userStoreManager;
             }
+            assert userStoreManager != null;
             return ((AbstractUserStoreManager) userStoreManager).getSecondaryUserStoreManager(userStoreDomain);
         } catch (UserStoreException e) {
             throw new RuntimeException();
@@ -437,7 +486,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
      *
      * @param tenantDomain Tenant domain.
      * @return UserRealm.
-     * @throws AuthenticationFailedException If an error occurred while getting the UserRealm.
+     * @throws UserStoreException If an error occurred while getting the UserRealm.
      */
     private UserRealm getTenantUserRealm(String tenantDomain) throws UserStoreException {
 

@@ -112,6 +112,27 @@ public class IproovAuthorizationAPIClient {
         return payload.toString();
     }
 
+    public static void removeIproovUserProfile(String baseUrl, String apiKey, String clientId, String secret,
+                                               String userId) {
+
+        try {
+            URIBuilder uriBuilder = new URIBuilder(baseUrl);
+            uriBuilder.setPath(IproovAuthenticatorConstants.TokenEndpoints.IPROOV_DELETE_USER_PATH + "/" + userId);
+            HttpResponse response = IproovWebUtils.httpDelete(uriBuilder.build(), baseUrl, apiKey, clientId, secret);
+
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                HttpEntity entity = response.getEntity();
+                String jsonString = EntityUtils.toString(entity);
+                JSONObject jsonObject = new JSONObject(jsonString);
+                if (jsonObject.get("status").equals("Deleted")) {
+                    LOG.info("Successfully deleted the user profile from iProov server.");
+                }
+            }
+        } catch (URISyntaxException | IOException | IproovClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static IproovAuthnFailedException getIproovAuthnFailedException(
             IproovAuthenticatorConstants.ErrorMessages errorMessage) {
 

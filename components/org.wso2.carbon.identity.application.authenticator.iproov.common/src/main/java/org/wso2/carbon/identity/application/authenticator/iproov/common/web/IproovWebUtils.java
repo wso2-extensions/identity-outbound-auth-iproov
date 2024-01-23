@@ -9,10 +9,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -71,6 +68,19 @@ public class IproovWebUtils {
         }
     }
 
+    public static HttpResponse httpDelete(URI requestURL, String baseUrl, String apiKey, String clientId,
+                                          String clientSecret) throws IOException, IproovClientException {
+
+        HttpDelete request = new HttpDelete(requestURL);
+        String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+
+        CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
+        try (CloseableHttpResponse response = client.execute(request)) {
+            return toHttpResponse(response);
+        }
+    }
+
     private static HttpResponse toHttpResponse(final CloseableHttpResponse response) throws IOException {
 
         final HttpResponse result = new BasicHttpResponse(response.getStatusLine());
@@ -102,7 +112,7 @@ public class IproovWebUtils {
                     JsonObject tokenDetails = gson.fromJson(json, JsonObject.class);
                     in.close();
                     LOG.info("Access Token Response: " + tokenDetails.get("access_token").toString());
-                    return tokenDetails.get("access_token").toString();
+                    return tokenDetails.get("access_token").getAsString();
                 }
                 throw new IOException("Error occurred while retrieving the access token. Status code: " +
                         response.getStatusLine().getStatusCode());
