@@ -9,7 +9,11 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -17,7 +21,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
-import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovClientException;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorClientException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +44,7 @@ public class IproovWebUtils {
     }
 
     public static HttpResponse httpGet(URI requestURL, String baseUrl, String apiKey, String clientId,
-                                       String clientSecret) throws IOException, IproovClientException {
+                                       String clientSecret) throws IOException, IproovAuthenticatorClientException {
 
         HttpGet request = new HttpGet(requestURL);
         String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);
@@ -55,7 +59,7 @@ public class IproovWebUtils {
     }
 
     public static HttpResponse httpPost(URI requestURL, String payload, String clientId, String clientSecret)
-            throws IOException, IproovClientException {
+            throws IOException, IproovAuthenticatorClientException {
 
         HttpPost request = new HttpPost(requestURL);
         buildBasicAuthHeader(request, clientId, clientSecret);
@@ -69,7 +73,7 @@ public class IproovWebUtils {
     }
 
     public static HttpResponse httpDelete(URI requestURL, String baseUrl, String apiKey, String clientId,
-                                          String clientSecret) throws IOException, IproovClientException {
+                                          String clientSecret) throws IOException, IproovAuthenticatorClientException {
 
         HttpDelete request = new HttpDelete(requestURL);
         String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);

@@ -32,7 +32,9 @@ public class IproovAuthenticatorConstants {
         SERVER_ERROR_CREATING_HTTP_CLIENT("65014", "Error while creating http client.",
                                                   "Server error encountered while creating http client."),
         IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65015",
-                "Provided iProov access token is either invalid or expired");
+                "Provided iProov access token is either invalid or expired"),
+        IPROOV_NO_FEDERATED_USER_FOUND("65016", "No federated user found");
+
         private final String code;
         private final String message;
         private final String description;
@@ -94,12 +96,26 @@ public class IproovAuthenticatorConstants {
         }
     }
 
+    /**
+    * Constants for iProov verification statuses.
+    */
     public static class Verification {
 
             public static final String AUTHENTICATION = "authentication";
             public static final String ENROLLMENT = "enrollment";
     }
 
+    /**
+     * Authenticator config related configurations.
+     */
+    public static class ConnectorConfig {
+
+        public static final String ENABLE_IPROOV_PROGRESSIVE_ENROLLMENT = "IProov.EnablePasskeyProgressiveEnrollment";
+    }
+
+    /**
+     * Constants for iProov configuration properties.
+     */
     public enum ConfigProperties {
         BASE_URL(1, "baseUrl", "Base URL",
                 "Enter the base URL of your iProov server deployment."),
@@ -147,6 +163,9 @@ public class IproovAuthenticatorConstants {
         }
     }
 
+    /**
+     * Constants for iProov payload parameters.
+     */
     public static class PayloadConstants {
 
         public static final String API_KEY = "api_key";
@@ -161,6 +180,9 @@ public class IproovAuthenticatorConstants {
         public static final String CLIENT_VALUE = "User Agent";
     }
 
+    /**
+     * Constants for iProov token endpoints.
+     */
     public static class TokenEndpoints {
 
         public static final String ACCESS_TOKEN_PATH = "/access_token";
@@ -172,8 +194,8 @@ public class IproovAuthenticatorConstants {
     }
 
     public static final String SESSION_DATA_KEY = "sessionDataKey";
+    public static final String SCENARIO = "scenario";
     public static final String AUTHENTICATOR_NAME = "AuthenticatorName";
-
     public static final String AUTHENTICATOR_NAME_VALUE = "IproovAuthenticator";
     public static final String AUTHENTICATOR_FRIENDLY_NAME_VALUE = "Iproov";
     public static final String TENANT_DOMAIN = "tenantDomain";
@@ -181,11 +203,13 @@ public class IproovAuthenticatorConstants {
     public static final String USER_ID = "userId";
     public static final String VERIFY_TOKEN = "verifyToken";
     public static final String ENROLL_TOKEN = "enrollToken";
+    public static final String IS_IPROOV_ENROLLMENT_CONSENT_RECEIVED = "isIproovEnrollmentConsentReceived";
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String CORRELATION_ID_KEY = "Correlation-ID";
     public static final String VERIFICATION_STATUS = "passed";
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
-    public static final String IPROOV_ENROLLED_CLAIM = "http://wso2.org/claims/iproovEnrolled";
+    public static final String IPROOV_ENROLLED_CLAIM = "http://wso2.org/claims/identity/iProovEnrolled";
+    public static final String USER_ID_CLAIM = "http://wso2.org/claims/userid";
     public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
 
     // REST API Parameters

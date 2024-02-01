@@ -1,16 +1,21 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.internal;
 
+import org.osgi.framework.BundleContext;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.claim.metadata.mgt.ClaimMetadataManagementService;
 import org.wso2.carbon.identity.configuration.mgt.core.ConfigurationManager;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
+import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.idp.mgt.IdpManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
+/**
+ * Data holder for the Iproov Authenticator.
+ */
 public class IproovAuthenticatorDataHolder {
 
-
-    private static volatile IproovAuthenticatorDataHolder IproovAuthenticatorDataHolder = new IproovAuthenticatorDataHolder();
+    private static final IproovAuthenticatorDataHolder iproovAuthenticatorDataHolder =
+            new IproovAuthenticatorDataHolder();
 
     private static RealmService realmService;
     private static IdentityEventService identityEventService;
@@ -18,6 +23,7 @@ public class IproovAuthenticatorDataHolder {
     private static IdpManager idpManager;
     private static ApplicationManagementService applicationManagementService;
     private static ConfigurationManager configurationManager;
+    private static IdentityGovernanceService identityGovernanceService;
 
     private IproovAuthenticatorDataHolder() {
 
@@ -25,7 +31,7 @@ public class IproovAuthenticatorDataHolder {
 
     public static IproovAuthenticatorDataHolder getInstance() {
 
-        return IproovAuthenticatorDataHolder;
+        return iproovAuthenticatorDataHolder;
     }
 
     /**
@@ -36,7 +42,7 @@ public class IproovAuthenticatorDataHolder {
     public static RealmService getRealmService() {
 
         if (realmService == null) {
-            throw new RuntimeException("RealmService was not set during the SMS OTP service component startup");
+            throw new RuntimeException("RealmService was not set during the iProov service component startup");
         }
         return realmService;
     }
@@ -48,7 +54,7 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setRealmService(RealmService realmService) {
 
-        IproovAuthenticatorDataHolder.realmService = realmService;
+        iproovAuthenticatorDataHolder.realmService = realmService;
     }
 
     /**
@@ -71,7 +77,7 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setIdpManager(IdpManager idpManager) {
 
-        IproovAuthenticatorDataHolder.idpManager = idpManager;
+        iproovAuthenticatorDataHolder.idpManager = idpManager;
     }
 
     /**
@@ -95,7 +101,30 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setApplicationManagementService(ApplicationManagementService applicationManagementService) {
 
-        IproovAuthenticatorDataHolder.applicationManagementService = applicationManagementService;
+        iproovAuthenticatorDataHolder.applicationManagementService = applicationManagementService;
+    }
+
+    /**
+     * Get Identity Governance service.
+     *
+     * @return Identity Governance service.
+     */
+    public static IdentityGovernanceService getIdentityGovernanceService() {
+
+        if (identityGovernanceService == null) {
+            throw new RuntimeException("IdentityGovernanceService not available. Component is not started properly.");
+        }
+        return identityGovernanceService;
+    }
+
+    /**
+     * Set Identity Governance service.
+     *
+     * @param identityGovernanceService Identity Governance service.
+     */
+    public static void setIdentityGovernanceService(IdentityGovernanceService identityGovernanceService) {
+
+        IproovAuthenticatorDataHolder.identityGovernanceService = identityGovernanceService;
     }
 
     /**
@@ -105,7 +134,7 @@ public class IproovAuthenticatorDataHolder {
      */
     public static ClaimMetadataManagementService getClaimMetadataManagementService() {
 
-        return IproovAuthenticatorDataHolder.claimMetadataManagementService;
+        return iproovAuthenticatorDataHolder.claimMetadataManagementService;
     }
 
     /**
@@ -116,7 +145,7 @@ public class IproovAuthenticatorDataHolder {
     public static void setClaimMetadataManagementService(ClaimMetadataManagementService
                                                                  claimMetadataManagementService) {
 
-        IproovAuthenticatorDataHolder.claimMetadataManagementService = claimMetadataManagementService;
+        iproovAuthenticatorDataHolder.claimMetadataManagementService = claimMetadataManagementService;
     }
 
     /**
@@ -136,12 +165,12 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setIdentityEventService(IdentityEventService identityEventService) {
 
-        IproovAuthenticatorDataHolder.identityEventService = identityEventService;
+        iproovAuthenticatorDataHolder.identityEventService = identityEventService;
     }
 
     public static void setConfigurationManager(ConfigurationManager configurationManager) {
 
-        IproovAuthenticatorDataHolder.configurationManager = configurationManager;
+        iproovAuthenticatorDataHolder.configurationManager = configurationManager;
     }
 
     public static ConfigurationManager getConfigurationManager() {

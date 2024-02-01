@@ -4,9 +4,9 @@ package org.wso2.carbon.identity.application.authenticator.iproov.common.excepti
  * An exception class which is used to send a iProov specific error code and error message when the iProov connector
  * encountered any errors with regard to HTTP Client connections.
  */
-public class IproovClientException extends Exception {
+public class IproovAuthenticatorClientException extends IproovAuthenticatorException {
 
-    private String code;
+    private final String code;
 
     private String description;
 
@@ -17,7 +17,7 @@ public class IproovClientException extends Exception {
      * @param code    An error code specified to the authenticator.
      * @param message An error message specified to the authenticator.
      */
-    public IproovClientException(String message, String code) {
+    public IproovAuthenticatorClientException(String message, String code) {
 
         super(message);
         this.code = code;
@@ -31,7 +31,7 @@ public class IproovClientException extends Exception {
      * @param message     An error message specified to the authenticator.
      * @param description An in-detail error description specified to the authenticator.
      */
-    public IproovClientException(String message, String description, String code) {
+    public IproovAuthenticatorClientException(String message, String description, String code) {
 
         super(message);
         this.description = description;
@@ -48,7 +48,7 @@ public class IproovClientException extends Exception {
      * @param description An in-detail error description specified to the authenticator.
      * @param cause       Thrown exception.
      */
-    public IproovClientException(String message, String description, String code, Throwable cause) {
+    public IproovAuthenticatorClientException(String message, String description, String code, Throwable cause) {
 
         super(message, cause);
         this.description = description;

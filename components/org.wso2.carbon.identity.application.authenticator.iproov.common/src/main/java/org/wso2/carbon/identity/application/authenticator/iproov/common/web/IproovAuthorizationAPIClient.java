@@ -9,8 +9,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorClientException;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
-import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovClientException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,12 +51,11 @@ public class IproovAuthorizationAPIClient {
         } catch (URISyntaxException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.IPROOV_BASE_URL_INVALID_FAILURE, e);
-        } catch (IproovClientException e) {
-            throw getIproovAuthnFailedException(
-                    IproovAuthenticatorConstants.ErrorMessages.SERVER_ERROR_CREATING_HTTP_CLIENT, e);
         } catch (IOException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_VERIFY_TOKEN_FAILURE, e);
+        } catch (IproovAuthenticatorClientException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -78,7 +77,7 @@ public class IproovAuthorizationAPIClient {
                 JSONObject jsonObject = new JSONObject(jsonString);
                 return jsonObject.get(IproovAuthenticatorConstants.VERIFICATION_STATUS).toString();
             }
-        } catch (URISyntaxException | IOException | IproovClientException e) {
+        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException e) {
             throw new RuntimeException(e);
         }
         return null;
@@ -128,7 +127,7 @@ public class IproovAuthorizationAPIClient {
                     LOG.info("Successfully deleted the user profile from iProov server.");
                 }
             }
-        } catch (URISyntaxException | IOException | IproovClientException e) {
+        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException e) {
             throw new RuntimeException(e);
         }
     }

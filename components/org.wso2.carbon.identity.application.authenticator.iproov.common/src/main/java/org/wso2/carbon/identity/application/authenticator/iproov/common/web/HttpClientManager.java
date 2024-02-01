@@ -6,7 +6,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
-import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovClientException;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorClientException;
 
 import java.io.IOException;
 
@@ -27,9 +27,9 @@ public class HttpClientManager {
     /**
      * Creates a client manager.
      *
-     * @throws IproovClientException Exception thrown when an error occurred when creating HTTP client.
+     * @throws IproovAuthenticatorClientException Exception thrown when an error occurred when creating HTTP client.
      */
-    private HttpClientManager() throws IproovClientException {
+    private HttpClientManager() throws IproovAuthenticatorClientException {
 
         PoolingHttpClientConnectionManager connectionManager;
         try {
@@ -48,9 +48,9 @@ public class HttpClientManager {
     /**
      * Returns an instance of the HttpClientManager.
      *
-     * @throws IproovClientException Exception thrown when an error occurred when creating HTTP client.
+     * @throws IproovAuthenticatorClientException Exception thrown when an error occurred when creating HTTP client.
      */
-    public static HttpClientManager getInstance() throws IproovClientException {
+    public static HttpClientManager getInstance() throws IproovAuthenticatorClientException {
 
         if (httpClientManagerInstance == null) {
             synchronized (HttpClientManager.class) {
@@ -66,9 +66,9 @@ public class HttpClientManager {
      * Get HTTP client.
      *
      * @return CloseableHttpClient instance.
-     * @throws IproovClientException Exception thrown when an error occurred when getting HTTP client.
+     * @throws IproovAuthenticatorClientException Exception thrown when an error occurred when getting HTTP client.
      */
-    public CloseableHttpClient getHttpClient() throws IproovClientException {
+    public CloseableHttpClient getHttpClient() throws IproovAuthenticatorClientException {
 
         if (isNull(httpClient)) {
             throw handleServerException(
@@ -98,13 +98,13 @@ public class HttpClientManager {
         return poolingHttpClientConnectionMgr;
     }
 
-    private static IproovClientException handleServerException(
+    private static IproovAuthenticatorClientException handleServerException(
             IproovAuthenticatorConstants.ErrorMessages error, Throwable throwable, String... data) {
 
         String description = error.getDescription();
         if (ArrayUtils.isNotEmpty(data)) {
             description = String.format(description, data);
         }
-        return new IproovClientException(error.getMessage(), description, error.getCode(), throwable);
+        return new IproovAuthenticatorClientException(error.getMessage(), description, error.getCode(), throwable);
     }
 }
