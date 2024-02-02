@@ -15,7 +15,7 @@ public class IproovAuthenticatorConstants {
 
         AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE("65001",
                 "Authentication failed when redirecting the user to the login page."),
-        USER_NOT_FOUND("65002","User not found in the system. Please contact your system administrator."),
+        USER_NOT_FOUND("65002", "User not found in the system. Please contact your system administrator."),
         RETRIEVING_USER_STORE_FAILURE("65003", "Retrieving user store failed for the given user."),
         RETRIEVING_USER_REALM_FAILURE("65003", "Retrieving user realm failed for the given tenant."),
 

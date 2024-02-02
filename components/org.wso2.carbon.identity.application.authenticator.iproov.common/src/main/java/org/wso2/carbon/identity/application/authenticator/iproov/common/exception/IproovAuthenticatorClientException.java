@@ -1,7 +1,5 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.common.exception;
 
-import org.wso2.carbon.identity.base.IdentityException;
-
 /**
  * An exception class which is used to send a iProov specific error code and error message when the iProov connector
  * encountered any errors with regard to HTTP Client connections.

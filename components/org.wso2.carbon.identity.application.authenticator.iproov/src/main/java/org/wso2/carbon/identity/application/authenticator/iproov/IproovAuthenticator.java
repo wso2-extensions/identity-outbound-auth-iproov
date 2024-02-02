@@ -21,12 +21,12 @@ import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.governance.IdentityGovernanceException;
+import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
-import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -120,13 +120,14 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 }
                 try {
                     boolean isUserIproovEnrolled = isUserIproovEnrolled(context.getLastAuthenticatedUser());
-                    boolean enableProgressiveEnrollment = isIproovProgressiveEnrollmentEnabled(context.getTenantDomain());
+                    boolean enableProgressiveEnrollment = isIproovProgressiveEnrollmentEnabled(context
+                            .getTenantDomain());
                     if (!isUserIproovEnrolled && !enableProgressiveEnrollment) {
                         return AuthenticatorFlowStatus.FAIL_COMPLETED;
                     }
                 } catch (UserStoreException e) {
                     throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
-                            .RETRIEVING_USER_STORE_FAILURE,e);
+                            .RETRIEVING_USER_STORE_FAILURE, e);
                 }
                 initiateIproovAuthenticationRequest(response, context);
                 return AuthenticatorFlowStatus.INCOMPLETE;
@@ -189,7 +190,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         }
     }
 
-    @SuppressWarnings(value = "CRLF_INJECTION_LOGS", justification = "username should be sanitized at this point.")
+    @SuppressWarnings({"CRLF_INJECTION_LOGS", "UNVALIDATED_REDIRECT"})
     private void initiateIproovAuthenticationRequest(HttpServletResponse response, AuthenticationContext context)
             throws AuthenticationFailedException {
 
@@ -457,11 +458,12 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         try {
             userRealm = (IproovAuthenticatorDataHolder.getRealmService()).getTenantUserRealm(tenantId);
         } catch (UserStoreException e) {
-            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_USER_STORE_FAILURE,
-                    e);
+            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
+                            .RETRIEVING_USER_STORE_FAILURE, e);
         }
         if (userRealm == null) {
-            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_USER_REALM_FAILURE);
+            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
+                    .RETRIEVING_USER_REALM_FAILURE);
         }
         return userRealm;
     }
@@ -524,7 +526,8 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
      * @return Value associated with the given config key.
      * @throws IproovAuthnFailedException If an error occurred while getting th config value.
      */
-    public static String getIproovAuthenticatorConfig(String key, String tenantDomain) throws AuthenticationFailedException{
+    public static String getIproovAuthenticatorConfig(String key, String tenantDomain) throws
+            IproovAuthnFailedException {
 
         try {
             Property[] connectorConfigs;

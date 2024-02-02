@@ -10,37 +10,59 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ *
+ */
 public class IProovAuthenticatorConfigImpl implements IdentityConnectorConfig {
+
+    /**
+     *
+     */
     @Override
     public String getName() {
 
         return IproovAuthenticatorConstants.AUTHENTICATOR_NAME_VALUE;
     }
 
+    /**
+     *
+     */
     @Override
     public String getFriendlyName() {
 
         return IproovAuthenticatorConstants.AUTHENTICATOR_FRIENDLY_NAME_VALUE;
     }
 
+    /**
+     *
+     */
     @Override
     public String getCategory() {
 
         return "Multi Factor Authenticators";
     }
 
+    /**
+     *
+     */
     @Override
     public String getSubCategory() {
 
         return "DEFAULT";
     }
 
+    /**
+     *
+     */
     @Override
     public int getOrder() {
 
         return 0;
     }
 
+    /**
+     *
+     */
     @Override
     public Map<String, String> getPropertyNameMapping() {
 
@@ -50,6 +72,9 @@ public class IProovAuthenticatorConfigImpl implements IdentityConnectorConfig {
         return nameMapping;
     }
 
+    /**
+     *
+     */
     @Override
     public Map<String, String> getPropertyDescriptionMapping() {
 
@@ -59,6 +84,9 @@ public class IProovAuthenticatorConfigImpl implements IdentityConnectorConfig {
         return descriptionMapping;
     }
 
+    /**
+     *
+     */
     @Override
     public String[] getPropertyNames() {
 
@@ -67,6 +95,9 @@ public class IProovAuthenticatorConfigImpl implements IdentityConnectorConfig {
         return properties.toArray(new String[0]);
     }
 
+    /**
+     *
+     */
     @Override
     public Properties getDefaultPropertyValues(String tenantDomain) {
 
@@ -86,6 +117,9 @@ public class IProovAuthenticatorConfigImpl implements IdentityConnectorConfig {
         return properties;
     }
 
+    /**
+     *
+     */
     @Override
     public Map<String, String> getDefaultPropertyValues(String[] strings, String s) {
 

@@ -1,6 +1,5 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.internal;
 
-import org.osgi.framework.BundleContext;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.claim.metadata.mgt.ClaimMetadataManagementService;
 import org.wso2.carbon.identity.configuration.mgt.core.ConfigurationManager;

@@ -59,8 +59,8 @@ public class IproovAuthorizationAPIClient {
         }
     }
 
-    public static String validateVerification(String baseUrl, String tokenPath, String apiKey, String secret, String userId,
-                                              String token) throws IproovAuthnFailedException {
+    public static String validateVerification(String baseUrl, String tokenPath, String apiKey, String secret,
+                                              String userId, String token) throws IproovAuthnFailedException {
 
         try {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
