@@ -1,7 +1,7 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.rest.dispatcher;
 
 /**
- * A class that includes the error constants related to HYPR REST API errors.
+ * A class that includes the error constants related to iProov REST API errors.
  */
 public class ErrorConstants {
 

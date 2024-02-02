@@ -111,7 +111,7 @@
           },
           {
             "fieldName": "Base URL",
-            "hint": "Provide the <Code class=\"inline-code\">Base URL</Code> of your HYPR server deployment."
+            "hint": "Provide the <Code class=\"inline-code\">Base URL</Code> of your iProov server deployment."
           },
           {
             "fieldName": "OAuth Username",

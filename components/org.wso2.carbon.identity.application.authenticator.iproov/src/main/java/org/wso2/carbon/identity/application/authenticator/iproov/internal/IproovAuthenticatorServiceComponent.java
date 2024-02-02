@@ -38,37 +38,15 @@ public class IproovAuthenticatorServiceComponent {
             ctxt.getBundleContext().registerService(IdentityConnectorConfig.class,
                     new IProovAuthenticatorConfigImpl(), null);
             if (log.isDebugEnabled()) {
-                log.debug("Iproov Authenticator bundle is activated");
+                log.debug("iProov Authenticator bundle is activated");
             }
         } catch (Throwable e) {
             log.fatal(" Error while activating iproov authenticator bundle ", e);
         }
     }
 
-/*    @Activate
-    protected void activate(ComponentContext ctxt) {
-
-        IproovAuthenticator iproovAuthenticator = new IproovAuthenticator();
-        IproovAuthenticatorDataHolder dataHolder = IproovAuthenticatorDataHolder.getInstance();
-        BundleContext bundleContext = ctxt.getBundleContext();
-
-        try {
-            bundleContext.registerService(ApplicationAuthenticator.class.getName(),
-                    iproovAuthenticator, null);
-            bundleContext.registerService(IdentityConnectorConfig.class.getName(),
-                    new IProovAuthenticatorConfigImpl(), null);
-            if (log.isDebugEnabled()) {
-                log.debug("Iproov Authenticator bundle is activated");
-            }
-        } catch (Throwable e) {
-            log.fatal(" Error while activating iproov authenticator bundle ", e);
-        }
-        dataHolder.setBundleContext(bundleContext);
-    }*/
-
-
     /**
-     * This method is to deactivate the HYPR authenticator the service.
+     * This method is to deactivate the iProov authenticator the service.
      *
      * @param ctxt The Component Context
      */
@@ -76,7 +54,7 @@ public class IproovAuthenticatorServiceComponent {
     protected void deactivate(ComponentContext ctxt) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Iproov Authenticator bundle is deactivated");
+            log.debug("iProov Authenticator bundle is deactivated");
         }
     }
 

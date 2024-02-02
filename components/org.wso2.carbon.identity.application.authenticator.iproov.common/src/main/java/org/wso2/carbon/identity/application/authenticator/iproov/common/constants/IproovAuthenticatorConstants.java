@@ -15,10 +15,14 @@ public class IproovAuthenticatorConstants {
 
         AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE("65001",
                 "Authentication failed when redirecting the user to the login page."),
-        USER_NOT_FOUND("65002", "User not found.",
-                "User not found in the system. Please contact your system administrator."),
+        USER_NOT_FOUND("65002","User not found in the system. Please contact your system administrator."),
+        RETRIEVING_USER_STORE_FAILURE("65003", "Retrieving user store failed for the given user."),
+        RETRIEVING_USER_REALM_FAILURE("65003", "Retrieving user realm failed for the given tenant."),
+
         RETRIEVING_REG_USER_FAILURE("65003",
                 "Retrieving iProov registered user failed for the given userId."),
+        RETRIEVING_AUTHENTICATOR_CONFIG_FAILURE("65003",
+                "Retrieving iProov authenticator configurations failed."),
         RETRIEVING_VERIFY_TOKEN_FAILURE("65004",
                 "Retrieving the verify token failed for the user."),
         IPROOV_BASE_URL_INVALID_FAILURE("65008", "Provided iProov base URL is invalid."),
@@ -33,7 +37,14 @@ public class IproovAuthenticatorConstants {
                                                   "Server error encountered while creating http client."),
         IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65015",
                 "Provided iProov access token is either invalid or expired"),
-        IPROOV_NO_FEDERATED_USER_FOUND("65016", "No federated user found");
+        NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP("65016", "No authenticated user found"),
+        IPROOV_NO_FEDERATED_USER_FOUND("65017", "No federated user found"),
+        IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE("65018",
+                "Error while validating the iProov verification token."),
+        IPROOV_REMOVING_USER_PROFILE_FAILURE("65019", "Error while removing the iProov user profile."),
+        IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE("65020", "Error while retrieving the iProov access token."),
+        IPROOV_SETTING_IPROOV_CLAIM_VALUE_FAILURE("65021", "Error while setting the iProov claim value."),
+        IPROOV_REDIRECT_URL_BUILD_FAILURE("65018", "Error while building the iProov redirect URL.");
 
         private final String code;
         private final String message;
@@ -226,12 +237,12 @@ public class IproovAuthenticatorConstants {
         INVALID_TOKEN("INVALID_TOKEN", "Authentication failed due to an internal server error. " +
                 "To fix this, contact your system administrator."),
         INVALID_REQUEST("INVALID_REQUEST", "Invalid username provided"),
-        INVALID_USER("INVALID_USER", "User does not exist in HYPR"),
-        PENDING("PENDING", "Authentication with HYPR is in progress. Awaiting for the user to " +
+        INVALID_USER("INVALID_USER", "User does not exist in iProov"),
+        PENDING("PENDING", "Authentication with iProov is in progress. Awaiting for the user to " +
                 "authenticate via the registered smart device"),
         COMPLETED("COMPLETED", "Authentication successfully completed."),
         FAILED("FAILED", "Authentication failed. Try again."),
-        CANCELED("CANCELED", "Authentication with HYPR was cancelled by the user.");
+        CANCELED("CANCELED", "Authentication with iProov was cancelled by the user.");
 
         private final String name;
         private final String message;

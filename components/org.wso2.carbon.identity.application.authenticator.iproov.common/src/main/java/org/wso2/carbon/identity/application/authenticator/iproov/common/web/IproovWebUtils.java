@@ -11,7 +11,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BufferedHttpEntity;
@@ -22,6 +21,8 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorClientException;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorServerException;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,8 +31,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants.CLIENT_CREDENTIALS_GRANT_TYPE;
 
 /**
  *
@@ -43,23 +42,8 @@ public class IproovWebUtils {
 
     }
 
-    public static HttpResponse httpGet(URI requestURL, String baseUrl, String apiKey, String clientId,
-                                       String clientSecret) throws IOException, IproovAuthenticatorClientException {
-
-        HttpGet request = new HttpGet(requestURL);
-        String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);
-        LOG.info("Access Token: " + accessToken);
-
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-
-        CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
-        try (CloseableHttpResponse response = client.execute(request)) {
-            return toHttpResponse(response);
-        }
-    }
-
     public static HttpResponse httpPost(URI requestURL, String payload, String clientId, String clientSecret)
-            throws IOException, IproovAuthenticatorClientException {
+            throws IproovAuthenticatorClientException, IproovAuthenticatorServerException {
 
         HttpPost request = new HttpPost(requestURL);
         buildBasicAuthHeader(request, clientId, clientSecret);
@@ -69,11 +53,14 @@ public class IproovWebUtils {
         CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
         try (CloseableHttpResponse response = client.execute(request)) {
             return toHttpResponse(response);
+        } catch (IOException e) {
+            throw new IproovAuthenticatorServerException("Error occurred while executing the HTTP request.", e);
         }
     }
 
     public static HttpResponse httpDelete(URI requestURL, String baseUrl, String apiKey, String clientId,
-                                          String clientSecret) throws IOException, IproovAuthenticatorClientException {
+                                          String clientSecret) throws IproovAuthenticatorClientException,
+            IproovAuthenticatorServerException, IproovAuthnFailedException {
 
         HttpDelete request = new HttpDelete(requestURL);
         String accessToken = getAccessToken(baseUrl, apiKey, clientId, clientSecret);
@@ -82,6 +69,8 @@ public class IproovWebUtils {
         CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
         try (CloseableHttpResponse response = client.execute(request)) {
             return toHttpResponse(response);
+        } catch (IOException e) {
+            throw new IproovAuthenticatorServerException("Error occurred while executing the HTTP request.", e);
         }
     }
 
@@ -94,7 +83,8 @@ public class IproovWebUtils {
         return result;
     }
 
-    private static String getAccessToken(String baseUrl, String apiKey, String clientId, String clientSecret) {
+    private static String getAccessToken(String baseUrl, String apiKey, String clientId, String clientSecret) throws
+            IproovAuthenticatorServerException, IproovAuthnFailedException {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().useSystemProperties().build()) {
 
@@ -103,7 +93,8 @@ public class IproovWebUtils {
             HttpPost httpPost = new HttpPost(tokenEndpoint);
             buildBasicAuthHeader(httpPost, clientId, clientSecret);
             List<BasicNameValuePair> urlParameters = new ArrayList<>();
-            urlParameters.add(new BasicNameValuePair("grant_type", CLIENT_CREDENTIALS_GRANT_TYPE));
+            urlParameters.add(new BasicNameValuePair("grant_type",
+                    IproovAuthenticatorConstants.CLIENT_CREDENTIALS_GRANT_TYPE));
             httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -118,11 +109,13 @@ public class IproovWebUtils {
                     LOG.info("Access Token Response: " + tokenDetails.get("access_token").toString());
                     return tokenDetails.get("access_token").getAsString();
                 }
-                throw new IOException("Error occurred while retrieving the access token. Status code: " +
-                        response.getStatusLine().getStatusCode());
+                throw new IproovAuthenticatorServerException("Error occurred while retrieving the access token. " +
+                        "Status code: " + response.getStatusLine().getStatusCode());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error occurred while retrieving the access token.", e);
+            throw new IproovAuthnFailedException(
+                    IproovAuthenticatorConstants.ErrorMessages.IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE.getCode(),
+                    IproovAuthenticatorConstants.ErrorMessages.IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE.getMessage(), e);
         }
     }
 

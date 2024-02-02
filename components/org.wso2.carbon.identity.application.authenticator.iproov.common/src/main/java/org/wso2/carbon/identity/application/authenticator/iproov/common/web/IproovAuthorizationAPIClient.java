@@ -10,6 +10,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorClientException;
+import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthenticatorServerException;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
 
 import java.io.IOException;
@@ -33,7 +34,6 @@ public class IproovAuthorizationAPIClient {
             HttpResponse response = IproovWebUtils.httpPost(uriBuilder.build(), payload, apiKey, secret);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
                 HttpEntity entity = response.getEntity();
                 String jsonString = EntityUtils.toString(entity);
                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -54,13 +54,13 @@ public class IproovAuthorizationAPIClient {
         } catch (IOException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_VERIFY_TOKEN_FAILURE, e);
-        } catch (IproovAuthenticatorClientException e) {
+        }  catch (IproovAuthenticatorServerException | IproovAuthenticatorClientException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static String validateVerification(String baseUrl, String tokenPath, String apiKey, String secret, String userId,
-                                              String token) {
+                                              String token) throws IproovAuthnFailedException {
 
         try {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
@@ -77,8 +77,10 @@ public class IproovAuthorizationAPIClient {
                 JSONObject jsonObject = new JSONObject(jsonString);
                 return jsonObject.get(IproovAuthenticatorConstants.VERIFICATION_STATUS).toString();
             }
-        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException e) {
-            throw new RuntimeException(e);
+        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException |
+                 IproovAuthenticatorServerException e) {
+            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
+                    .IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE, e);
         }
         return null;
     }
@@ -106,13 +108,14 @@ public class IproovAuthorizationAPIClient {
         payload.put(IproovAuthenticatorConstants.PayloadConstants.API_SECRET, secret);
         payload.put(IproovAuthenticatorConstants.PayloadConstants.USER_ID, userId);
         payload.put(IproovAuthenticatorConstants.PayloadConstants.TOKEN, token);
-        payload.put(IproovAuthenticatorConstants.PayloadConstants.CLIENT, IproovAuthenticatorConstants.PayloadConstants.CLIENT_VALUE);
+        payload.put(IproovAuthenticatorConstants.PayloadConstants.CLIENT, IproovAuthenticatorConstants
+                .PayloadConstants.CLIENT_VALUE);
 
         return payload.toString();
     }
 
     public static void removeIproovUserProfile(String baseUrl, String apiKey, String clientId, String secret,
-                                               String userId) {
+                                               String userId) throws IproovAuthnFailedException {
 
         try {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
@@ -127,8 +130,10 @@ public class IproovAuthorizationAPIClient {
                     LOG.info("Successfully deleted the user profile from iProov server.");
                 }
             }
-        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException e) {
-            throw new RuntimeException(e);
+        } catch (URISyntaxException | IOException | IproovAuthenticatorClientException |
+                 IproovAuthenticatorServerException e) {
+            throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
+                    .IPROOV_REMOVING_USER_PROFILE_FAILURE, e);
         }
     }
 
