@@ -65,6 +65,10 @@
             <artifactId>org.wso2.carbon.identity.governance</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wso2.carbon.identity.event.handler.accountlock</groupId>
+            <artifactId>org.wso2.carbon.identity.handler.event.account.lock</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.iproov.common</artifactId>
         </dependency>
@@ -113,7 +117,6 @@
                             org.wso2.carbon.identity.application.authenticator.iproov.internal
                         </Private-Package>
                         <Import-Package>
-
                             com.google.gson; version="${gson.version}",
                             com.google.gson.reflect; version="${gson.version}",
                             org.apache.http.client.config; version="${httpcomponents-httpclient.imp.pkg.version.range}",
@@ -134,7 +137,6 @@
                             org.json.*; version="${json.wso2.version.range}",
                             org.wso2.carbon.utils.*; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.user.core.*; version="${carbon.kernel.package.import.version.range}",
-
                             org.wso2.carbon.user.api.*; version="${carbon.user.api.imp.pkg.version.range}",
 
                             org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
@@ -151,7 +153,10 @@
                             org.wso2.carbon.extension.identity.helper.*; version="${identity.extension.utils.import.version.range}",
                             org.wso2.carbon.idp.mgt.*; version="${carbon.identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.identity.base.*; version="${carbon.identity.framework.imp.pkg.version.range}",
-
+                            org.wso2.carbon.identity.event; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.event.event; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.event.services; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.handler.event.account.lock.*; version="${carbon.identity.account.lock.handler.imp.pkg.version.range}",
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.iproov.internal,

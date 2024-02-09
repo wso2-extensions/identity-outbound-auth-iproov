@@ -1,8 +1,5 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.common.constants;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * This class contains the constants used by the Iproov Authenticator.
  */
@@ -16,6 +13,7 @@ public class IproovAuthenticatorConstants {
         AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE("65001",
                 "Authentication failed when redirecting the user to the login page."),
         USER_NOT_FOUND("65002", "User not found in the system. Please contact your system administrator."),
+        USER_ACCOUNT_LOCKED("65002", "User account i Please contact your system administrators locked."),
         RETRIEVING_USER_STORE_FAILURE("65003", "Retrieving user store failed for the given user."),
         RETRIEVING_USER_REALM_FAILURE("65003", "Retrieving user realm failed for the given tenant."),
 
@@ -114,6 +112,7 @@ public class IproovAuthenticatorConstants {
 
             public static final String AUTHENTICATION = "authentication";
             public static final String ENROLLMENT = "enrollment";
+            public static final String RETRY = "retry";
     }
 
     /**
@@ -138,7 +137,9 @@ public class IproovAuthenticatorConstants {
                 "Enter the API key of your iProov server deployment."),
         API_SECRET(5, "apiSecret", "API Secret",
                 "Enter the API secret of your iProov server deployment."),
-        ;
+        ENABLE_PROGRESSIVE_ENROLLMENT(6, "enableProgressiveEnrollment",
+                "Enable Progressive Enrollment", "Enable progressive enrollment for iProov.");
+
         private final int displayOrder;
 
         private final String name;
@@ -220,29 +221,18 @@ public class IproovAuthenticatorConstants {
     public static final String VERIFICATION_STATUS = "passed";
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
     public static final String IPROOV_ENROLLED_CLAIM = "http://wso2.org/claims/identity/iProovEnrolled";
+    public static final String IPROOV_FAILED_LOGIN_ATTEMPTS_CLAIM =
+            "http://wso2.org/claims/identity/failediProovAttempts";
     public static final String USER_ID_CLAIM = "http://wso2.org/claims/userid";
+    public static final String USER_ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
     public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
-
-    // REST API Parameters
-    public static final String AUTH_STATUS = "authStatus";
-    public static final String AUTH_REQUEST_ID = "authRequestId";
-    public static final List<String> TERMINATING_STATUSES = Arrays.asList("COMPLETED", "FAILED", "CANCELED");
-
 
     /**
      * Object holding authentication mobile response status.
      */
     public enum AuthenticationStatus {
-
-        INVALID_TOKEN("INVALID_TOKEN", "Authentication failed due to an internal server error. " +
-                "To fix this, contact your system administrator."),
-        INVALID_REQUEST("INVALID_REQUEST", "Invalid username provided"),
-        INVALID_USER("INVALID_USER", "User does not exist in iProov"),
         PENDING("PENDING", "Authentication with iProov is in progress. Awaiting for the user to " +
-                "authenticate via the registered smart device"),
-        COMPLETED("COMPLETED", "Authentication successfully completed."),
-        FAILED("FAILED", "Authentication failed. Try again."),
-        CANCELED("CANCELED", "Authentication with iProov was cancelled by the user.");
+                "authenticate via the registered smart device");
 
         private final String name;
         private final String message;

@@ -12,8 +12,10 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.iproov.IproovAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.iproov.connector.IProovAuthenticatorConfigImpl;
+import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.identity.governance.common.IdentityConnectorConfig;
+import org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
@@ -88,5 +90,36 @@ public class IproovAuthenticatorServiceComponent {
 
         IproovAuthenticatorDataHolder.setIdentityGovernanceService(null);
     }
+    @Reference(
+            name = "AccountLockService",
+            service = AccountLockService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetAccountLockService"
+    )
+    protected void setAccountLockService(AccountLockService accountLockService) {
 
+        IproovAuthenticatorDataHolder.setAccountLockService(accountLockService);
+    }
+
+    protected void unsetAccountLockService(AccountLockService accountLockService) {
+
+        IproovAuthenticatorDataHolder.setAccountLockService(null);
+    }
+
+    @Reference(
+            name = "EventMgtService",
+            service = IdentityEventService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityEventService")
+    protected void setIdentityEventService(IdentityEventService eventService) {
+
+        IproovAuthenticatorDataHolder.setIdentityEventService(eventService);
+    }
+
+    protected void unsetIdentityEventService(IdentityEventService eventService) {
+
+        IproovAuthenticatorDataHolder.setIdentityEventService(null);
+    }
 }

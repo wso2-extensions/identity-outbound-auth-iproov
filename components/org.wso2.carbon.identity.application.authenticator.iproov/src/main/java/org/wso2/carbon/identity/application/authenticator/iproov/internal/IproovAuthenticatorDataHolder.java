@@ -1,36 +1,21 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.internal;
 
-import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
-import org.wso2.carbon.identity.claim.metadata.mgt.ClaimMetadataManagementService;
-import org.wso2.carbon.identity.configuration.mgt.core.ConfigurationManager;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
-import org.wso2.carbon.idp.mgt.IdpManager;
+import org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Data holder for the Iproov Authenticator.
  */
 public class IproovAuthenticatorDataHolder {
-
-    private static final IproovAuthenticatorDataHolder iproovAuthenticatorDataHolder =
-            new IproovAuthenticatorDataHolder();
-
     private static RealmService realmService;
     private static IdentityEventService identityEventService;
-    private static ClaimMetadataManagementService claimMetadataManagementService;
-    private static IdpManager idpManager;
-    private static ApplicationManagementService applicationManagementService;
-    private static ConfigurationManager configurationManager;
     private static IdentityGovernanceService identityGovernanceService;
+    private static AccountLockService accountLockService;
 
     private IproovAuthenticatorDataHolder() {
 
-    }
-
-    public static IproovAuthenticatorDataHolder getInstance() {
-
-        return iproovAuthenticatorDataHolder;
     }
 
     /**
@@ -53,54 +38,7 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setRealmService(RealmService realmService) {
 
-        iproovAuthenticatorDataHolder.realmService = realmService;
-    }
-
-    /**
-     * Get IdpManager.
-     *
-     * @return IdpManager.
-     */
-    public static IdpManager getIdpManager() {
-
-        if (idpManager == null) {
-            throw new RuntimeException("IdpManager not available. Component is not started properly.");
-        }
-        return idpManager;
-    }
-
-    /**
-     * Set IdpManager.
-     *
-     * @param idpManager IdpManager.
-     */
-    public static void setIdpManager(IdpManager idpManager) {
-
-        iproovAuthenticatorDataHolder.idpManager = idpManager;
-    }
-
-    /**
-     * Get ApplicationManagementService instance.
-     *
-     * @return ApplicationManagementService instance.
-     */
-    public static ApplicationManagementService getApplicationManagementService() {
-
-        if (applicationManagementService == null) {
-            throw new RuntimeException(
-                    "applicationManagementService not available. Component is not started properly.");
-        }
-        return applicationManagementService;
-    }
-
-    /**
-     * Set applicationManagementService instance.
-     *
-     * @param applicationManagementService applicationManagementService instance.
-     */
-    public static void setApplicationManagementService(ApplicationManagementService applicationManagementService) {
-
-        iproovAuthenticatorDataHolder.applicationManagementService = applicationManagementService;
+        IproovAuthenticatorDataHolder.realmService = realmService;
     }
 
     /**
@@ -127,27 +65,6 @@ public class IproovAuthenticatorDataHolder {
     }
 
     /**
-     * Get {@link ClaimMetadataManagementService}.
-     *
-     * @return ClaimMetadataManagementService.
-     */
-    public static ClaimMetadataManagementService getClaimMetadataManagementService() {
-
-        return iproovAuthenticatorDataHolder.claimMetadataManagementService;
-    }
-
-    /**
-     * Set {@link ClaimMetadataManagementService}.
-     *
-     * @param claimMetadataManagementService Instance of {@link ClaimMetadataManagementService}.
-     */
-    public static void setClaimMetadataManagementService(ClaimMetadataManagementService
-                                                                 claimMetadataManagementService) {
-
-        iproovAuthenticatorDataHolder.claimMetadataManagementService = claimMetadataManagementService;
-    }
-
-    /**
      * Get IdentityEventService instance.
      *
      * @return IdentityEventService instance.
@@ -164,16 +81,26 @@ public class IproovAuthenticatorDataHolder {
      */
     public static void setIdentityEventService(IdentityEventService identityEventService) {
 
-        iproovAuthenticatorDataHolder.identityEventService = identityEventService;
+        IproovAuthenticatorDataHolder.identityEventService = identityEventService;
     }
 
-    public static void setConfigurationManager(ConfigurationManager configurationManager) {
+    /**
+     * Get Account Lock service.
+     *
+     * @return Account Lock service.
+     */
+    public static AccountLockService getAccountLockService() {
 
-        iproovAuthenticatorDataHolder.configurationManager = configurationManager;
+        return accountLockService;
     }
 
-    public static ConfigurationManager getConfigurationManager() {
+    /**
+     * Set Account Lock service.
+     *
+     * @param accountLockService Account Lock service.
+     */
+    public static void setAccountLockService(AccountLockService accountLockService) {
 
-        return configurationManager;
+        IproovAuthenticatorDataHolder.accountLockService = accountLockService;
     }
 }

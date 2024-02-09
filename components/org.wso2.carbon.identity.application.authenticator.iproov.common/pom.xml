@@ -64,6 +64,9 @@
                         </Bundle-SymbolicName>
                         <Import-Package>
                             org.wso2.carbon.identity.base.*; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.event; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.event.event; version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.event.services; version="${carbon.identity.framework.imp.pkg.version.range}",
                             org.apache.http.client.methods; version="${httpcomponents-httpclient.imp.pkg.version.range}",
                             org.apache.http.impl.client; version="${httpcomponents-httpclient.imp.pkg.version.range}",
                             org.apache.http; version="${httpcore.version.osgi.import.range}",
@@ -72,7 +75,6 @@
                             org.apache.http.*; version="${httpcore.version.osgi.import.range}",
                             org.json.*; version="${json.wso2.version.range}",
                         </Import-Package>
-
                     </instructions>
                 </configuration>
             </plugin>

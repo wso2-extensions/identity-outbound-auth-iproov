@@ -104,6 +104,19 @@
               "options": [],
               "defaultValue": "",
               "subProperties": []
+            },
+            {
+              "key": "enableProgressiveEnrollment",
+              "displayName": "Enable Progressive Enrollment",
+              "description": "Enable Progressive Enrollment",
+              "type": "BOOLEAN",
+              "displayOrder": 5,
+              "regex": ".*",
+              "isMandatory": false,
+              "isConfidential": false,
+              "options": [],
+              "defaultValue": "",
+              "subProperties": []
             }
           ]
         }

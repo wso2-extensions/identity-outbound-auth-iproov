@@ -93,6 +93,21 @@
             "maxLength": "100",
             "minLength": "3",
             "width": "13"
+          },
+          {
+            "index": 6,
+            "className": "addon-field-wrapper",
+            "ariaLabel": "Enable Progressive Enrollment",
+            "type": "checkbox",
+            "name": "enableProgressiveEnrollment",
+            "label": "Enable Progressive Enrollment",
+            "placeholder": "Enter API Secret from iProov application.",
+            "required": false,
+            "autoComplete": false,
+            "testId": "iproov-idp-create-wizard-page-idp-apiSecret",
+            "maxLength": "100",
+            "minLength": "3",
+            "width": "13"
           }
         ]
 
