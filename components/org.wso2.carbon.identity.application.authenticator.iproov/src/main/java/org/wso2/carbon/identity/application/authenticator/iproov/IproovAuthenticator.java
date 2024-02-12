@@ -99,13 +99,12 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         String sessionDataKey = httpServletRequest.getParameter(IproovAuthenticatorConstants.SESSION_DATA_KEY);
         if (StringUtils.isNotBlank(sessionDataKey)) {
             return sessionDataKey;
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("A unique identifier cannot be issued for both Request and Response. " +
-                        "ContextIdentifier is NULL.");
-            }
-            return null;
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("A unique identifier cannot be issued for both Request and Response. " +
+                    "ContextIdentifier is NULL.");
+        }
+        return null;
     }
 
     @Override
@@ -123,8 +122,8 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                         .NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP);
             }
-            String scenario = request.getParameter("scenario");
-            // In the initial request to launch iProov login page scenario will be set to null.
+            String scenario = request.getParameter(IproovAuthenticatorConstants.SCENARIO);
+            // In the initial request to launch iProov login page scenario will be null.
             if (IproovAuthenticatorConstants.Verification.AUTHENTICATION.equals(scenario)
                     || IproovAuthenticatorConstants.Verification.ENROLLMENT.equals(scenario)) {
                 processAuthenticationResponse(request, response, context);
@@ -141,10 +140,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 return AuthenticatorFlowStatus.FAIL_COMPLETED;
             }
             initiateIproovAuthenticationRequest(request, response, context);
-
             return AuthenticatorFlowStatus.INCOMPLETE;
-
-
         } catch (UserStoreException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_USER_STORE_FAILURE, e);
@@ -287,13 +283,13 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 context.setProperty(IproovAuthenticatorConstants.ENROLL_TOKEN, enrollToken);
                 queryParams.put(IproovAuthenticatorConstants.ENROLL_TOKEN, enrollToken);
             }
-            if (IproovAuthenticatorConstants.Verification.RETRY.equals(request.getParameter("scenario"))) {
+            if (IproovAuthenticatorConstants.Verification.RETRY.equals(request.getParameter(
+                    IproovAuthenticatorConstants.SCENARIO))) {
                 queryParams.put(IproovAuthenticatorConstants.Verification.RETRY, "true");
                 handleIProovFailedAttempts(authenticatedUser);
             }
             redirectIproovLoginPage(response, context, IproovAuthenticatorConstants.AuthenticationStatus.PENDING,
                     queryParams);
-
         } catch (IproovAuthnFailedException e) {
             throw new AuthenticationFailedException(e.getMessage(), e);
         } catch (URLBuilderException | IOException e) {
@@ -339,7 +335,6 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                 .NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP);
     }
-
 
     @Override
     protected void processAuthenticationResponse(HttpServletRequest request, HttpServletResponse response,
@@ -408,7 +403,6 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 Map<String, String> claims = new HashMap<>();
                 claims.put(IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM, "true");
                 userStoreManager.setUserClaimValues(username, claims, null);
-
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully logged in the user " + userId);

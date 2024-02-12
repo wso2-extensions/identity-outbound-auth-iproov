@@ -11,10 +11,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.iproov.IproovAuthenticator;
-import org.wso2.carbon.identity.application.authenticator.iproov.connector.IProovAuthenticatorConfigImpl;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
-import org.wso2.carbon.identity.governance.common.IdentityConnectorConfig;
 import org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -36,8 +34,6 @@ public class IproovAuthenticatorServiceComponent {
             IproovAuthenticator iproovAuthenticator = new IproovAuthenticator();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     iproovAuthenticator, null);
-            ctxt.getBundleContext().registerService(IdentityConnectorConfig.class,
-                    new IProovAuthenticatorConfigImpl(), null);
             if (log.isDebugEnabled()) {
                 log.debug("iProov Authenticator bundle is activated");
             }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import static java.util.Objects.isNull;
 
 /**
- *
+ * HTTP client manager.
  */
 public class HttpClientManager {
 

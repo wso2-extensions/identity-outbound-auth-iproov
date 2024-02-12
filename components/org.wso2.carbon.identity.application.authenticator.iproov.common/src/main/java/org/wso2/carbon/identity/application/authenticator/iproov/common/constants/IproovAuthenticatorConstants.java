@@ -6,43 +6,36 @@ package org.wso2.carbon.identity.application.authenticator.iproov.common.constan
 public class IproovAuthenticatorConstants {
 
     /**
-    *
+    * Error messages for iProov authenticator.
     */
     public enum ErrorMessages {
 
         AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE("65001",
                 "Authentication failed when redirecting the user to the login page."),
         USER_NOT_FOUND("65002", "User not found in the system. Please contact your system administrator."),
-        USER_ACCOUNT_LOCKED("65002", "User account i Please contact your system administrators locked."),
-        RETRIEVING_USER_STORE_FAILURE("65003", "Retrieving user store failed for the given user."),
-        RETRIEVING_USER_REALM_FAILURE("65003", "Retrieving user realm failed for the given tenant."),
-
-        RETRIEVING_REG_USER_FAILURE("65003",
+        USER_ACCOUNT_LOCKED("65003", "User account i Please contact your system administrators locked."),
+        RETRIEVING_USER_STORE_FAILURE("65004", "Retrieving user store failed for the given user."),
+        RETRIEVING_USER_REALM_FAILURE("65005", "Retrieving user realm failed for the given tenant."),
+        RETRIEVING_REG_USER_FAILURE("65006",
                 "Retrieving iProov registered user failed for the given userId."),
-        RETRIEVING_AUTHENTICATOR_CONFIG_FAILURE("65003",
-                "Retrieving iProov authenticator configurations failed."),
-        RETRIEVING_VERIFY_TOKEN_FAILURE("65004",
+        RETRIEVING_VERIFY_TOKEN_FAILURE("65007",
                 "Retrieving the verify token failed for the user."),
         IPROOV_BASE_URL_INVALID_FAILURE("65008", "Provided iProov base URL is invalid."),
         IPROOV_API_KEY_INVALID_FAILURE("65009", "Provided iProov api key is invalid."),
         IPROOV_API_SECRET_INVALID_FAILURE("65010", "Provided iProov api secret is invalid."),
         IPROOV_OAUTH_USERNAME_INVALID_FAILURE("65011", "Provided iProov oauth username is invalid."),
         IPROOV_OAUTH_PASSWORD_INVALID_FAILURE("65012", "Provided iProov oauth password is invalid."),
-
         SERVER_ERROR_INVALID_AUTHENTICATION_PROPERTIES("65013",
                 "Invalid authenticator configurations or no user found."),
-        SERVER_ERROR_CREATING_HTTP_CLIENT("65014", "Error while creating http client.",
-                                                  "Server error encountered while creating http client."),
-        IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65015",
+        IPROOV_ACCESS_TOKEN_INVALID_FAILURE("65014",
                 "Provided iProov access token is either invalid or expired"),
-        NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP("65016", "No authenticated user found"),
-        IPROOV_NO_FEDERATED_USER_FOUND("65017", "No federated user found"),
-        IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE("65018",
+        NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP("65015", "No authenticated user found"),
+        IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE("65016",
                 "Error while validating the iProov verification token."),
-        IPROOV_REMOVING_USER_PROFILE_FAILURE("65019", "Error while removing the iProov user profile."),
-        IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE("65020", "Error while retrieving the iProov access token."),
-        IPROOV_SETTING_IPROOV_CLAIM_VALUE_FAILURE("65021", "Error while setting the iProov claim value."),
-        IPROOV_REDIRECT_URL_BUILD_FAILURE("65018", "Error while building the iProov redirect URL.");
+        IPROOV_REMOVING_USER_PROFILE_FAILURE("65017", "Error while removing the iProov user profile."),
+        IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE("65018", "Error while retrieving the iProov access token."),
+        IPROOV_SETTING_IPROOV_CLAIM_VALUE_FAILURE("65019", "Error while setting the iProov claim value."),
+        IPROOV_REDIRECT_URL_BUILD_FAILURE("65020", "Error while building the iProov redirect URL.");
 
         private final String code;
         private final String message;
@@ -59,13 +52,6 @@ public class IproovAuthenticatorConstants {
             this.code = code;
             this.message = message;
             description = null;
-        }
-
-        ErrorMessages(String code, String message, String description) {
-
-            this.code = code;
-            this.message = message;
-            this.description = description;
         }
 
         /**
@@ -116,14 +102,6 @@ public class IproovAuthenticatorConstants {
     }
 
     /**
-     * Authenticator config related configurations.
-     */
-    public static class ConnectorConfig {
-
-        public static final String ENABLE_IPROOV_PROGRESSIVE_ENROLLMENT = "IProov.EnablePasskeyProgressiveEnrollment";
-    }
-
-    /**
      * Constants for iProov configuration properties.
      */
     public enum ConfigProperties {
@@ -141,7 +119,6 @@ public class IproovAuthenticatorConstants {
                 "Enable Progressive Enrollment", "Enable progressive enrollment for iProov.");
 
         private final int displayOrder;
-
         private final String name;
         private final String displayName;
         private final String description;
@@ -215,7 +192,6 @@ public class IproovAuthenticatorConstants {
     public static final String USER_ID = "userId";
     public static final String VERIFY_TOKEN = "verifyToken";
     public static final String ENROLL_TOKEN = "enrollToken";
-    public static final String IS_IPROOV_ENROLLMENT_CONSENT_RECEIVED = "isIproovEnrollmentConsentReceived";
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String CORRELATION_ID_KEY = "Correlation-ID";
     public static final String VERIFICATION_STATUS = "passed";

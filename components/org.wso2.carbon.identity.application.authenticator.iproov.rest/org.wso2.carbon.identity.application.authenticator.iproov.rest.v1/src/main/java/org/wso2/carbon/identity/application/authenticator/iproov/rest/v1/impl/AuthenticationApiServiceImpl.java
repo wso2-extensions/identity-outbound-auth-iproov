@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -23,7 +23,7 @@ import org.wso2.carbon.identity.application.authenticator.iproov.rest.v1.Authent
 import javax.ws.rs.core.Response;
 
 /**
- *
+ * Implementation of the Authentication API.
  */
 public class AuthenticationApiServiceImpl implements AuthenticationApiService {
 

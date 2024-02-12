@@ -1,6 +1,5 @@
 package org.wso2.carbon.identity.application.authenticator.iproov.rest.dispatcher;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

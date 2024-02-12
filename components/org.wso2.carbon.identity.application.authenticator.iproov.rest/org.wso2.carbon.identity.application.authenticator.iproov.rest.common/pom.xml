@@ -72,5 +72,4 @@
             <artifactId>org.wso2.carbon.identity.application.authenticator.iproov.common</artifactId>
         </dependency>
     </dependencies>
-
 </project>

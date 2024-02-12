@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
 /**
- *
+ * API Error Exception Mapper.
  */
 public class APIErrorExceptionMapper implements ExceptionMapper<WebApplicationException> {
 

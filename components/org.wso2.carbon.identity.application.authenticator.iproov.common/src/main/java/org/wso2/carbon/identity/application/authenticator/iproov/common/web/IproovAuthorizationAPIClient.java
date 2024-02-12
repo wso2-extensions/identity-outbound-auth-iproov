@@ -23,6 +23,17 @@ public class IproovAuthorizationAPIClient {
 
     private static final Log LOG = LogFactory.getLog(IproovAuthorizationAPIClient.class);
 
+    /**
+     *  This method is used to get the token from the iProov server.
+     *
+     *  @param baseUrl The base URL of the iProov server.
+     *  @param tokenPath The token path of the iProov server.
+     *  @param apiKey The API key of the created iProov service provider.
+     *  @param secret The secret of the created iProov service provider.
+     *  @param userId The user ID.
+     *  @return The token from the iProov server.
+     *  @throws IproovAuthnFailedException If an error occurred when getting the token from the iProov server.
+     */
     public static String getToken(String baseUrl, String tokenPath, String apiKey, String secret, String userId)
             throws IproovAuthnFailedException {
 
@@ -51,14 +62,25 @@ public class IproovAuthorizationAPIClient {
         } catch (URISyntaxException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.IPROOV_BASE_URL_INVALID_FAILURE, e);
-        } catch (IOException e) {
+        } catch (IOException | IproovAuthenticatorServerException | IproovAuthenticatorClientException e) {
             throw getIproovAuthnFailedException(
                     IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_VERIFY_TOKEN_FAILURE, e);
-        }  catch (IproovAuthenticatorServerException | IproovAuthenticatorClientException e) {
-            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * This method is used to validate the verification token from the iProov server.
+     *
+     * @param baseUrl The base URL of the iProov server.
+     * @param tokenPath The token path of the iProov server.
+     * @param apiKey The API key of the created iProov service provider.
+     * @param secret The secret of the created iProov service provider.
+     * @param userId The user ID.
+     * @param token The token from the iProov server.
+     * @return The status of the verification token.
+     * @throws IproovAuthnFailedException If an error occurred when validating the verification token from the iProov
+     * server.
+     */
     public static String validateVerification(String baseUrl, String tokenPath, String apiKey, String secret,
                                               String userId, String token) throws IproovAuthnFailedException {
 
@@ -85,6 +107,14 @@ public class IproovAuthorizationAPIClient {
         return null;
     }
 
+    /**
+     * This method is used to create the token payload.
+     *
+     * @param apiKey The API key of the created iProov service provider.
+     * @param secret The secret of the created iProov service provider.
+     * @param userId The user ID.
+     * @return The token payload.
+     */
     private static String createTokenPayload(String apiKey, String secret, String userId) {
 
         JSONObject payload = new JSONObject();
@@ -100,6 +130,15 @@ public class IproovAuthorizationAPIClient {
         return payload.toString();
     }
 
+    /**
+     * This method is used to create the verification payload.
+     *
+     * @param apiKey The API key of the created iProov service provider.
+     * @param secret The secret of the created iProov service provider.
+     * @param userId The user ID.
+     * @param token The token from the iProov server.
+     * @return The verification payload.
+     */
     private static String createVerificationPayload(String apiKey, String secret, String userId, String token) {
 
         JSONObject payload = new JSONObject();
@@ -114,6 +153,17 @@ public class IproovAuthorizationAPIClient {
         return payload.toString();
     }
 
+    /**
+     * This method is used to remove the iProov user profile from the iProov server.
+     *
+     * @param baseUrl The base URL of the iProov server.
+     * @param apiKey The API key of the created iProov service provider.
+     * @param clientId The client ID of the created iProov service provider.
+     * @param secret The secret of the created iProov service provider.
+     * @param userId The user ID.
+     * @throws IproovAuthnFailedException If an error occurred when removing the iProov user profile from the iProov
+     * server.
+     */
     public static void removeIproovUserProfile(String baseUrl, String apiKey, String clientId, String secret,
                                                String userId) throws IproovAuthnFailedException {
 
@@ -136,7 +186,7 @@ public class IproovAuthorizationAPIClient {
                     .IPROOV_REMOVING_USER_PROFILE_FAILURE, e);
         }
     }
-
+    
     private static IproovAuthnFailedException getIproovAuthnFailedException(
             IproovAuthenticatorConstants.ErrorMessages errorMessage) {
 

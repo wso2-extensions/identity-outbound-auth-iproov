@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Iproov Web Utils.
  */
 public class IproovWebUtils {
 
@@ -42,6 +42,16 @@ public class IproovWebUtils {
 
     }
 
+    /**
+     * Executes an HTTP POST request.
+     *
+     * @param requestURL    Request URL.
+     * @param payload       Payload.
+     * @param clientId      Client ID.
+     * @param clientSecret  Client Secret.
+     * @return HTTP response.
+     * @throws IproovAuthenticatorClientException Exception thrown when an error occurred when creating HTTP client.
+     */
     public static HttpResponse httpPost(URI requestURL, String payload, String clientId, String clientSecret)
             throws IproovAuthenticatorClientException, IproovAuthenticatorServerException {
 
@@ -58,6 +68,21 @@ public class IproovWebUtils {
         }
     }
 
+    /**
+     * Executes an HTTP DELETE request.
+     *
+     * @param requestURL    Request URL.
+     * @param baseUrl       Base URL.
+     * @param apiKey        API Key.
+     * @param clientId      Client ID.
+     * @param clientSecret  Client Secret.
+     * @return HTTP response.
+     * @throws IproovAuthenticatorClientException Exception thrown when a client error occurred when creating HTTP
+     * client.
+     * @throws IproovAuthenticatorServerException Exception thrown when a server  error occurred when creating HTTP
+     * client.
+     * @throws IproovAuthnFailedException Exception thrown when an error occurred when executing the HTTP request.
+     */
     public static HttpResponse httpDelete(URI requestURL, String baseUrl, String apiKey, String clientId,
                                           String clientSecret) throws IproovAuthenticatorClientException,
             IproovAuthenticatorServerException, IproovAuthnFailedException {
@@ -106,7 +131,6 @@ public class IproovWebUtils {
                     Gson gson = new Gson();
                     JsonObject tokenDetails = gson.fromJson(json, JsonObject.class);
                     in.close();
-                    LOG.info("Access Token Response: " + tokenDetails.get("access_token").toString());
                     return tokenDetails.get("access_token").getAsString();
                 }
                 throw new IproovAuthenticatorServerException("Error occurred while retrieving the access token. " +

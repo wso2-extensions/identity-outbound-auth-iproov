@@ -3,7 +3,7 @@ package org.wso2.carbon.identity.application.authenticator.iproov.common.excepti
 import org.wso2.carbon.identity.base.IdentityException;
 
 /**
- *
+ * Iproov Authenticator Exception.
  */
 public class IproovAuthenticatorException extends IdentityException {
     public IproovAuthenticatorException(String message) {
