@@ -98,16 +98,12 @@
             "index": 6,
             "className": "addon-field-wrapper",
             "ariaLabel": "Enable Progressive Enrollment",
-            "type": "checkbox",
+            "type": "BOOLEAN",
             "name": "enableProgressiveEnrollment",
             "label": "Enable Progressive Enrollment",
-            "placeholder": "Enter API Secret from iProov application.",
             "required": false,
             "autoComplete": false,
-            "testId": "iproov-idp-create-wizard-page-idp-apiSecret",
-            "maxLength": "100",
-            "minLength": "3",
-            "width": "13"
+            "testId": "iproov-idp-create-wizard-page-idp-enableProgressiveEnrollment"
           }
         ]
 
@@ -173,8 +169,8 @@
         "value": ""
       },
       {
-          "key": "enableProgressiveEnrollment",
-          "value": false
+        "key": "enableProgressiveEnrollment",
+        "value": false
       }
     ]
   },
@@ -265,13 +261,13 @@
           "validation": true
         },
         {
-          "index": 8,
-          "displayOrder" : 9,
+          "index": 9,
+          "displayOrder" : 10,
           "label": "Enable Progressive Enrollment",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-enableProgressiveEnrollment",
           "name": "enableProgressiveEnrollment",
           "required": false,
-          "type": "checkbox",
+          "type": "BOOLEAN",
           "hint": "Enable progressive enrollment to allow users to enroll their face progressively with iProov.",
           "validation": true
         }
