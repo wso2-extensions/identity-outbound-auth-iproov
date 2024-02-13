@@ -116,7 +116,7 @@
         "message": {
           "header": "Prerequites",
           "paragraphs": [
-            "iProov helps you to authenticate users using their face. To use iProov, you need to have an iProov account. If you do not have an account, you can create one at <Link>https://www.iproov.com/</Link>.",
+            "iProov helps you to authenticate users using their face. To use iProov, you need to have an iProov account.If you do not have an account, you can create one at <Link>https://www.iproov.com/</Link>.",
           ]
         },
         "fields": [
@@ -143,6 +143,10 @@
           {
             "fieldName": "API Secret",
             "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> of the application registered in the iPortal."
+          },
+          {
+            "fieldName": "Enable Progressive Enrollment",
+            "hint": "Enable progressive enrollment to allow users to enroll their face progressively with iProov."
           }
         ]
       }
@@ -167,6 +171,10 @@
       {
         "key": "apiSecret",
         "value": ""
+      },
+      {
+          "key": "enableProgressiveEnrollment",
+          "value": false
       }
     ]
   },
@@ -192,23 +200,6 @@
         {
           "index": 2,
           "displayOrder" : 3,
-          "name": "jwks_endpoint",
-          "ariaLabel": "JWKS Endpoint URL",
-          "inputType": "url",
-          "type": "text",
-          "label": "JWKS Endpoint URL",
-          "required": true,
-          "placeholder": "https://{ oauth-provider-url }/oauth/jwks",
-          "value": "",
-          "data-testid": "",
-          "maxLength": "2048",
-          "minLength": "10",
-          "hint": "A JSON Web Key (JWK) Set is a JSON object that represents a set of JWKs. The JSON object MUST have a keys member, with its value being an array of JWKs.",
-          "readOnly": false
-        },
-        {
-          "index": 3,
-          "displayOrder" : 4,
           "type": "certbox",
           "isJWKSEnabled": "",
           "isReadOnly": "",
@@ -219,7 +210,7 @@
       ],
       "settings" : [
         {
-          "index": 4,
+          "index": 3,
           "displayOrder" : 4,
           "label": "Base URL",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-baseUrl",
@@ -230,7 +221,7 @@
           "validation": true
         },
         {
-          "index": 5,
+          "index": 4,
           "displayOrder" : 5,
           "label": "OAuth Username",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthUsername",
@@ -241,7 +232,7 @@
           "validation": true
         },
         {
-          "index": 6,
+          "index": 5,
           "displayOrder" : 6,
           "label": "OAuth Password",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
@@ -252,19 +243,8 @@
           "validation": true
         },
         {
-          "index": 7,
+          "index": 6,
           "displayOrder" : 7,
-          "label": "OAuth Password",
-          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
-          "name": "oauthPassword",
-          "required": true,
-          "type": "text",
-          "hint": "Enter OAuth username from iProov application.",
-          "validation": true
-        },
-        {
-          "index": 8,
-          "displayOrder" : 8,
           "label": "apiKey",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiKey",
           "name": "apiKey",
@@ -274,8 +254,8 @@
           "validation": true
         },
         {
-          "index": 9,
-          "displayOrder" : 9,
+          "index": 7,
+          "displayOrder" : 8,
           "label": "apiSecret",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiSecret",
           "name": "apiSecret",
@@ -283,10 +263,20 @@
           "type": "text",
           "hint": "Enter API secret from iProov application.",
           "validation": true
+        },
+        {
+          "index": 8,
+          "displayOrder" : 9,
+          "label": "Enable Progressive Enrollment",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-enableProgressiveEnrollment",
+          "name": "enableProgressiveEnrollment",
+          "required": false,
+          "type": "checkbox",
+          "hint": "Enable progressive enrollment to allow users to enroll their face progressively with iProov.",
+          "validation": true
         }
       ],
       "quickStart": "iproov"
     }
-
   }
 }

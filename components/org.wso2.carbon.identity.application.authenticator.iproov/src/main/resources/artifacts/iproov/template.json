@@ -7,7 +7,7 @@
   "category": "DEFAULT",
   "displayOrder": 7,
   "services": [],
-  "tags": [ "Social-Login" ],
+  "tags": [ "Passwordless" ],
   "idp": {
     "name": "iProov",
     "description": "",
