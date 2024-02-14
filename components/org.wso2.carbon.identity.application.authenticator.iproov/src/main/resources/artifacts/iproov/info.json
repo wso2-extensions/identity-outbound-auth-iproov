@@ -1,10 +1,10 @@
 {
   "id": "iproov-idp",
   "name": "iProov",
-  "description": "Enable login for users with existing iProov accounts.",
+  "description": "Enable login for users with iProov.",
   "image": "assets/images/logos/iproov.svg",
   "category": "DEFAULT",
   "displayOrder": 7,
-  "tags": [ "Social-Login" ],
+  "tags": [ "Passwordless", "MFA" ],
   "type": "identity-provider"
 }

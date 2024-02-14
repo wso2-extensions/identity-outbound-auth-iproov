@@ -2,7 +2,7 @@
   "create": {
     "image": "assets/images/logos/iproov.svg",
     "header": "iProov",
-    "Subheading": "Enable login for users with existing iProov profiles.",
+    "Subheading": "Enable login for users with iProov.",
     "documentation": "{ENV}/asgardeo/docs/guides/authentication/#manage-connections",
     "modal": {
       "form": {
@@ -27,7 +27,7 @@
             "type": "text",
             "name": "baseUrl",
             "label": "Base URL",
-            "placeholder": "Enter iProov server base URL",
+            "placeholder": "Enter iProov server base URL.",
             "required": true,
             "autoComplete": false,
             "data-testid": "iproov-idp-create-wizard-page-idp-base-url",
@@ -41,7 +41,7 @@
             "type": "text",
             "name": "oauthUsername",
             "label": "OAuth Username",
-            "placeholder": "Enter OAuth username from iProov application.",
+            "placeholder": "Enter OAuth username from created identity provider in iProov.",
             "required": true,
             "autoComplete": false,
             "data-testid": "iproov-idp-create-wizard-page-idp-oauthUsername",
@@ -56,7 +56,7 @@
             "type": "password",
             "name": "oauthPassword",
             "label": "OAuth Password",
-            "placeholder": "Enter OAuth username from iProov application.",
+            "placeholder": "Enter OAuth username from created identity provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-oauthPassword",
@@ -71,7 +71,7 @@
             "type": "text",
             "name": "apiKey",
             "label": "API Key",
-            "placeholder": "Enter API Key from iProov application.",
+            "placeholder": "Enter API Key from created identity provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-apiKey",
@@ -83,10 +83,10 @@
             "index": 5,
             "className": "addon-field-wrapper",
             "ariaLabel": "API Secret",
-            "type": "secret",
+            "type": "password",
             "name": "apiSecret",
             "label": "API Secret",
-            "placeholder": "Enter API Secret from iProov application.",
+            "placeholder": "Enter API Secret from created identity provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-apiSecret",
@@ -112,13 +112,13 @@
         "message": {
           "header": "Prerequites",
           "paragraphs": [
-            "iProov helps you to authenticate users using their face. To use iProov, you need to have an iProov account.If you do not have an account, you can create one at <Link>https://www.iproov.com/</Link>.",
+            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered identity provider in iProov <Link>https://www.iproov.com</Link>.",
           ]
         },
         "fields": [
           {
             "fieldName": "Name",
-            "hint": "Provide a unique name for the connection."
+            "hint": "Provide an unique name for the connection."
           },
           {
             "fieldName": "Base URL",
@@ -126,23 +126,23 @@
           },
           {
             "fieldName": "OAuth Username",
-            "hint": "Provide the <Code class=\"inline-code\">OAuth Username</Code> of the application registered in the iPortal."
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Username</Code> from the identity provider created in iProov."
           },
           {
             "fieldName": "OAuth Password",
-            "hint": "Provide the <Code class=\"inline-code\">OAuth Password</Code> of the application registered in the iPortal."
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Password</Code> from the identity provider created in iProov."
           },
           {
             "fieldName": "API Key",
-            "hint": "Provide the <Code class=\"inline-code\">API Key</Code> of the application registered in the iPortal."
+            "hint": "Provide the <Code class=\"inline-code\">API Key</Code> from the identity provider created in iProov."
           },
           {
             "fieldName": "API Secret",
-            "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> of the application registered in the iPortal."
+            "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> from the identity provider created in iProov."
           },
           {
             "fieldName": "Enable Progressive Enrollment",
-            "hint": "Enable progressive enrollment to allow users to enroll their face progressively with iProov."
+            "hint": "Enable progressive enrollment to allow users to enroll with iProov during login."
           }
         ]
       }
@@ -213,7 +213,7 @@
           "name": "baseUrl",
           "required": true,
           "type": "text",
-          "hint": "Enter OAuth username from iProov application.",
+          "hint": "Enter OAuth username from identity provider created in iProov.",
           "validation": true
         },
         {
@@ -224,7 +224,7 @@
           "name": "oauthUsername",
           "required": true,
           "type": "text",
-          "hint": "Enter OAuth username from iProov application.",
+          "hint": "Enter OAuth username from identity provider created in iProov.",
           "validation": true
         },
         {
@@ -234,30 +234,30 @@
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
           "name": "oauthPassword",
           "required": true,
-          "type": "text",
-          "hint": "Enter OAuth password from iProov application.",
+          "type": "password",
+          "hint": "Enter OAuth password from identity provider created in iProov.",
           "validation": true
         },
         {
           "index": 6,
           "displayOrder" : 7,
-          "label": "apiKey",
+          "label": "API Key",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiKey",
           "name": "apiKey",
           "required": true,
           "type": "text",
-          "hint": "Enter API key from iProov application.",
+          "hint": "Enter API key from identity provider created in iProov.",
           "validation": true
         },
         {
           "index": 7,
           "displayOrder" : 8,
-          "label": "apiSecret",
+          "label": "API Secret",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiSecret",
           "name": "apiSecret",
           "required": true,
-          "type": "text",
-          "hint": "Enter API secret from iProov application.",
+          "type": "password",
+          "hint": "Enter API secret from identity provider created in iProov.",
           "validation": true
         },
         {
@@ -268,7 +268,7 @@
           "name": "enableProgressiveEnrollment",
           "required": false,
           "type": "BOOLEAN",
-          "hint": "Enable progressive enrollment to allow users to enroll their face progressively with iProov.",
+          "hint": "Enable progressive enrollment to allow users to enroll with iProov.",
           "validation": true
         }
       ],

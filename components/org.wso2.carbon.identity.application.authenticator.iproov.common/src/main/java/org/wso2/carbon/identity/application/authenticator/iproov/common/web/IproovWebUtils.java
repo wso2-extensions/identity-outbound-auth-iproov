@@ -127,7 +127,7 @@ public class IproovWebUtils {
                             StandardCharsets.UTF_8);
                     BufferedReader in = new BufferedReader(reader);
                     String json = in.readLine();
-                    // Parse the Json response and retrieve the Access Token
+                    // Parse the Json response and retrieve the Access Token.
                     Gson gson = new Gson();
                     JsonObject tokenDetails = gson.fromJson(json, JsonObject.class);
                     in.close();

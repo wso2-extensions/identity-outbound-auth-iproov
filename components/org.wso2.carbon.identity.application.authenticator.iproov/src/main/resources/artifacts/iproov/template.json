@@ -1,13 +1,13 @@
 {
   "id": "iproov-idp",
   "name": "iProov",
-  "description": "Enable login for users with existing iProov registrations.",
+  "description": "Enable login for users with iProov.",
   "docLink": "/guides/authentication/#manage-connections",
   "image": "assets/images/logos/iproov.svg",
   "category": "DEFAULT",
   "displayOrder": 7,
   "services": [],
-  "tags": [ "Passwordless" ],
+  "tags": [ "Passwordless", "MFA" ],
   "idp": {
     "name": "iProov",
     "description": "",
@@ -70,11 +70,11 @@
               "key": "oauthPassword",
               "displayName": "OAuth Password",
               "description": "Enter OAuth Password",
-              "type": "STRING",
+              "type": "PASSWORD",
               "displayOrder": 2,
               "regex": ".*",
               "isMandatory": true,
-              "isConfidential": false,
+              "isConfidential": true,
               "options": [],
               "defaultValue": "",
               "subProperties": []
@@ -96,11 +96,11 @@
               "key": "apiSecret",
               "displayName": "API Secret",
               "description": "Enter API Secret",
-              "type": "STRING",
+              "type": "password",
               "displayOrder": 4,
               "regex": ".*",
               "isMandatory": true,
-              "isConfidential": false,
+              "isConfidential": true,
               "options": [],
               "defaultValue": "",
               "subProperties": []
@@ -115,7 +115,7 @@
               "isMandatory": false,
               "isConfidential": false,
               "options": [],
-              "defaultValue": "",
+              "defaultValue": "true",
               "subProperties": []
             }
           ]
@@ -123,6 +123,6 @@
       ]
     }
   },
-  "type": "SOCIAL",
+  "type": "Password-less",
   "templateId": "iproov-idp"
 }
