@@ -81,7 +81,7 @@ public class IproovAuthorizationAPIClient {
      * @throws IproovAuthnFailedException If an error occurred when validating the verification token from the iProov
      * server.
      */
-    public static String validateVerification(String baseUrl, String tokenPath, String apiKey, String secret,
+    public static boolean validateVerification(String baseUrl, String tokenPath, String apiKey, String secret,
                                               String userId, String token) throws IproovAuthnFailedException {
 
         try {
@@ -97,14 +97,14 @@ public class IproovAuthorizationAPIClient {
                 String jsonString = EntityUtils.toString(entity);
 
                 JSONObject jsonObject = new JSONObject(jsonString);
-                return jsonObject.get(IproovAuthenticatorConstants.VERIFICATION_STATUS).toString();
+                return Boolean.parseBoolean(jsonObject.get(IproovAuthenticatorConstants.VERIFICATION_STATUS).toString());
             }
+            return false;
         } catch (URISyntaxException | IOException | IproovAuthenticatorClientException |
                  IproovAuthenticatorServerException e) {
             throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                     .IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE, e);
         }
-        return null;
     }
 
     /**

@@ -373,7 +373,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                     IproovAuthenticatorConstants.ConfigProperties.OAUTH_PASSWORD.getName());
 
             String verificationMode = request.getParameter(IproovAuthenticatorConstants.SCENARIO);
-            String isValidated;
+            boolean isValidated;
             if (IproovAuthenticatorConstants.Verification.AUTHENTICATION.equals(verificationMode)) {
                 String verifyToken = (String) context.getProperty(IproovAuthenticatorConstants.VERIFY_TOKEN);
                 isValidated = IproovAuthorizationAPIClient.validateVerification(baseUrl,
@@ -384,13 +384,13 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 isValidated = IproovAuthorizationAPIClient.validateVerification(baseUrl,
                         IproovAuthenticatorConstants.TokenEndpoints.IPROOV_ENROLL_VERIFICATION_PATH, apiKey, apiSecret,
                         userId, enrollToken);
-                if (!Boolean.parseBoolean(isValidated)) {
+                if (!isValidated) {
                     IproovAuthorizationAPIClient.removeIproovUserProfile(baseUrl, apiKey, oauthUsername, oauthPassword,
                             userId);
                 }
             }
 
-            if (!Boolean.parseBoolean(isValidated)) {
+            if (!isValidated) {
                 handleIProovFailedAttempts(authenticatedUserFromContext);
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                         .IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE);
