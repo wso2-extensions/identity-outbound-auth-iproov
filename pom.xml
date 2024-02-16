@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+  ~
+  ~ WSO2 LLC. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -24,7 +42,6 @@
     <name>WSO2 Carbon - iProov Authenticator Feature Aggregator Module</name>
     <modules>
         <module>components/org.wso2.carbon.identity.application.authenticator.iproov</module>
-        <module>components/org.wso2.carbon.identity.application.authenticator.iproov.rest</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.iproov.common</module>
     </modules>
 
@@ -154,6 +171,11 @@
                 <groupId>org.wso2.org.ops4j.pax.logging</groupId>
                 <artifactId>pax-logging-api</artifactId>
                 <version>${pax-logging-api.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>org.wso2.carbon.identity.application.authenticator.iproov</artifactId>
+                <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
@@ -369,10 +391,7 @@
 
     <properties>
         <carbon.kernel.version>4.9.10</carbon.kernel.version>
-        <carbon.kernel.package.import.version.range>[4.6.0, 5.0.0)</carbon.kernel.package.import.version.range>
-        <carbon.identity.framework.version>5.25.604</carbon.identity.framework.version>
-        <carbon.identity.framework.imp.pkg.version.range>[5.20.90, 7.0.0)</carbon.identity.framework.imp.pkg.version.range>
-        <carbon.user.api.imp.pkg.version.range>[1.0.1, 2.0.0)</carbon.user.api.imp.pkg.version.range>
+        <carbon.identity.framework.version>7.0.73</carbon.identity.framework.version>
 
         <!-- Identity Extension Utils -->
         <identity.extension.utils>1.0.12</identity.extension.utils>
@@ -401,8 +420,10 @@
         <carbon.identity.account.lock.handler.version>1.8.2</carbon.identity.account.lock.handler.version>
 
         <!-- Version Ranges -->
-        <identity.framework.package.import.version.range>[5.14.0, 7.0.0)
-        </identity.framework.package.import.version.range>
+        <carbon.identity.framework.imp.pkg.version.range>[5.20.90, 8.0.0)</carbon.identity.framework.imp.pkg.version.range>
+        <carbon.kernel.package.import.version.range>[4.6.0, 5.0.0)</carbon.kernel.package.import.version.range>
+        <carbon.user.api.imp.pkg.version.range>[1.0.1, 2.0.0)</carbon.user.api.imp.pkg.version.range>
+
         <osgi.service.component.imp.pkg.version.range>[1.2.0, 2.0.0)</osgi.service.component.imp.pkg.version.range>
         <osgi.framework.imp.pkg.version.range>[1.7.0, 2.0.0)</osgi.framework.imp.pkg.version.range>
         <commons-logging.osgi.version.range>[1.2.0,2.0.0)</commons-logging.osgi.version.range>

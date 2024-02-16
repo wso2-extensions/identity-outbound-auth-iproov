@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.application.authenticator.iproov.common.web;
 
 import com.google.gson.Gson;
@@ -38,6 +56,7 @@ import java.util.List;
 public class IproovWebUtils {
 
     private static final Log LOG = LogFactory.getLog(IproovWebUtils.class);
+
     private IproovWebUtils() {
 
     }
@@ -45,10 +64,10 @@ public class IproovWebUtils {
     /**
      * Executes an HTTP POST request.
      *
-     * @param requestURL    Request URL.
-     * @param payload       Payload.
-     * @param clientId      Client ID.
-     * @param clientSecret  Client Secret.
+     * @param requestURL   Request URL.
+     * @param payload      Payload.
+     * @param clientId     Client ID.
+     * @param clientSecret Client Secret.
      * @return HTTP response.
      * @throws IproovAuthenticatorClientException Exception thrown when an error occurred when creating HTTP client.
      */
@@ -57,7 +76,7 @@ public class IproovWebUtils {
 
         HttpPost request = new HttpPost(requestURL);
         buildBasicAuthHeader(request, clientId, clientSecret);
-        request.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        request.addHeader(HttpHeaders.CONTENT_TYPE, IproovAuthenticatorConstants.APPLICATION_JSON_CONTENT_TYPE);
         request.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
 
         CloseableHttpClient client = HttpClientManager.getInstance().getHttpClient();
@@ -71,17 +90,18 @@ public class IproovWebUtils {
     /**
      * Executes an HTTP DELETE request.
      *
-     * @param requestURL    Request URL.
-     * @param baseUrl       Base URL.
-     * @param apiKey        API Key.
-     * @param clientId      Client ID.
-     * @param clientSecret  Client Secret.
+     * @param requestURL   Request URL.
+     * @param baseUrl      Base URL.
+     * @param apiKey       API Key.
+     * @param clientId     Client ID.
+     * @param clientSecret Client Secret.
      * @return HTTP response.
      * @throws IproovAuthenticatorClientException Exception thrown when a client error occurred when creating HTTP
-     * client.
+     *                                            client.
      * @throws IproovAuthenticatorServerException Exception thrown when a server  error occurred when creating HTTP
-     * client.
-     * @throws IproovAuthnFailedException Exception thrown when an error occurred when executing the HTTP request.
+     *                                            client.
+     * @throws IproovAuthnFailedException         Exception thrown when an error occurred when executing the HTTP
+     *                                            request.
      */
     public static HttpResponse httpDelete(URI requestURL, String baseUrl, String apiKey, String clientId,
                                           String clientSecret) throws IproovAuthenticatorClientException,
@@ -118,7 +138,7 @@ public class IproovWebUtils {
             HttpPost httpPost = new HttpPost(tokenEndpoint);
             buildBasicAuthHeader(httpPost, clientId, clientSecret);
             List<BasicNameValuePair> urlParameters = new ArrayList<>();
-            urlParameters.add(new BasicNameValuePair("grant_type",
+            urlParameters.add(new BasicNameValuePair(IproovAuthenticatorConstants.GRANT_TYPE,
                     IproovAuthenticatorConstants.CLIENT_CREDENTIALS_GRANT_TYPE));
             httpPost.setEntity(new UrlEncodedFormEntity(urlParameters));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
@@ -131,7 +151,11 @@ public class IproovWebUtils {
                     Gson gson = new Gson();
                     JsonObject tokenDetails = gson.fromJson(json, JsonObject.class);
                     in.close();
-                    return tokenDetails.get("access_token").getAsString();
+                    return tokenDetails.get(IproovAuthenticatorConstants.ACCESS_TOKEN).getAsString();
+                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Error occurred while retrieving the access token. Status code: " +
+                            response.getStatusLine().toString());
                 }
                 throw new IproovAuthenticatorServerException("Error occurred while retrieving the access token. " +
                         "Status code: " + response.getStatusLine().getStatusCode());

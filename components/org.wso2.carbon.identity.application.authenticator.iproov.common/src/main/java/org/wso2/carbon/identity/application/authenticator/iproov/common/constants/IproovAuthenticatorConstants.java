@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.application.authenticator.iproov.common.constants;
 
 /**
@@ -12,8 +30,8 @@ public class IproovAuthenticatorConstants {
 
         AUTHENTICATION_FAILED_REDIRECTING_LOGIN_FAILURE("65001",
                 "Authentication failed when redirecting the user to the login page."),
-        USER_NOT_FOUND("65002", "User not found in the system. Please contact your system administrator."),
-        USER_ACCOUNT_LOCKED("65003", "User account i Please contact your system administrators locked."),
+        USER_NOT_FOUND("65002", "User not found in the system."),
+        USER_ACCOUNT_LOCKED("65003", "User account is locked Please contact your system administrator."),
         RETRIEVING_USER_STORE_FAILURE("65004", "Retrieving user store failed for the given user."),
         RETRIEVING_USER_REALM_FAILURE("65005", "Retrieving user realm failed for the given tenant."),
         RETRIEVING_REG_USER_FAILURE("65006",
@@ -105,6 +123,7 @@ public class IproovAuthenticatorConstants {
      * Constants for iProov configuration properties.
      */
     public enum ConfigProperties {
+
         BASE_URL(1, "baseUrl", "Base URL",
                 "Enter the base URL of your iProov server deployment."),
         OAUTH_USERNAME(2, "oauthUsername", "OAuth Username",
@@ -195,7 +214,10 @@ public class IproovAuthenticatorConstants {
     public static final String IPROOV_API_PREFIX = "IPROOV-API-";
     public static final String CORRELATION_ID_KEY = "Correlation-ID";
     public static final String VERIFICATION_STATUS = "passed";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String GRANT_TYPE = "grant_type";
     public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
+    public static final String APPLICATION_JSON_CONTENT_TYPE = "application/json";
     public static final String IPROOV_ENROLLED_CLAIM = "http://wso2.org/claims/identity/iProovEnrolled";
     public static final String IPROOV_FAILED_LOGIN_ATTEMPTS_CLAIM =
             "http://wso2.org/claims/identity/failediProovAttempts";

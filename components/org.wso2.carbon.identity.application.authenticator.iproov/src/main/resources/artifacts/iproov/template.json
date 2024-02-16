@@ -7,7 +7,7 @@
   "category": "DEFAULT",
   "displayOrder": 7,
   "services": [],
-  "tags": [ "Passwordless", "MFA" ],
+  "tags": [ "Password-less", "MFA" ],
   "idp": {
     "name": "iProov",
     "description": "",
@@ -70,7 +70,7 @@
               "key": "oauthPassword",
               "displayName": "OAuth Password",
               "description": "Enter OAuth Password",
-              "type": "PASSWORD",
+              "type": "STRING",
               "displayOrder": 2,
               "regex": ".*",
               "isMandatory": true,
@@ -96,7 +96,7 @@
               "key": "apiSecret",
               "displayName": "API Secret",
               "description": "Enter API Secret",
-              "type": "password",
+              "type": "STRING",
               "displayOrder": 4,
               "regex": ".*",
               "isMandatory": true,
@@ -115,7 +115,7 @@
               "isMandatory": false,
               "isConfidential": false,
               "options": [],
-              "defaultValue": "true",
+              "defaultValue": true,
               "subProperties": []
             }
           ]

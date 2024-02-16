@@ -103,7 +103,8 @@
             "label": "Enable Progressive Enrollment",
             "required": false,
             "autoComplete": false,
-            "testId": "iproov-idp-create-wizard-page-idp-enableProgressiveEnrollment"
+            "testId": "iproov-idp-create-wizard-page-idp-enableProgressiveEnrollment",
+            "defaultValue": true
           }
         ]
 
@@ -170,7 +171,7 @@
       },
       {
         "key": "enableProgressiveEnrollment",
-        "value": false
+        "value": true
       }
     ]
   },
@@ -179,7 +180,7 @@
       "general" : [
         {
           "index": 1,
-          "displayOrder" : 2,
+          "displayOrder" : 1,
           "type": "textarea",
           "name" : "description",
           "ariaLabel" : "description",
@@ -195,7 +196,7 @@
         },
         {
           "index": 2,
-          "displayOrder" : 3,
+          "displayOrder" : 2,
           "type": "certbox",
           "isJWKSEnabled": "",
           "isReadOnly": "",
@@ -207,72 +208,91 @@
       "settings" : [
         {
           "index": 3,
+          "displayOrder" : 3,
+          "label": "Enable Progressive Enrollment",
+          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-enableProgressiveEnrollment",
+          "name": "enableProgressiveEnrollment",
+          "required": false,
+          "type": "BOOLEAN",
+          "hint": "Enable progressive enrollment to allow users to enroll with iProov during login.",
+          "validation": true
+        },
+        {
+          "index": 4,
           "displayOrder" : 4,
           "label": "Base URL",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-baseUrl",
           "name": "baseUrl",
           "required": true,
           "type": "text",
-          "hint": "Enter OAuth username from identity provider created in iProov.",
+          "hint": "Enter base url from the service provider created in iProov.",
           "validation": true
         },
         {
-          "index": 4,
+          "index": 5,
           "displayOrder" : 5,
           "label": "OAuth Username",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthUsername",
           "name": "oauthUsername",
           "required": true,
           "type": "text",
-          "hint": "Enter OAuth username from identity provider created in iProov.",
+          "hint": "Enter OAuth username from the service provider created in iProov.",
           "validation": true
         },
         {
-          "index": 5,
+          "index": 6,
           "displayOrder" : 6,
           "label": "OAuth Password",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-oauthPassword",
           "name": "oauthPassword",
           "required": true,
           "type": "password",
-          "hint": "Enter OAuth password from identity provider created in iProov.",
+          "hint": "Enter OAuth password from the service provider created in iProov.",
           "validation": true
         },
         {
-          "index": 6,
+          "index": 7,
           "displayOrder" : 7,
           "label": "API Key",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiKey",
           "name": "apiKey",
           "required": true,
           "type": "text",
-          "hint": "Enter API key from identity provider created in iProov.",
+          "hint": "Enter API key from the service provider created in iProov.",
           "validation": true
         },
         {
-          "index": 7,
+          "index": 8,
           "displayOrder" : 8,
           "label": "API Secret",
           "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-apiSecret",
           "name": "apiSecret",
           "required": true,
           "type": "password",
-          "hint": "Enter API secret from identity provider created in iProov.",
-          "validation": true
-        },
-        {
-          "index": 9,
-          "displayOrder" : 10,
-          "label": "Enable Progressive Enrollment",
-          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-enableProgressiveEnrollment",
-          "name": "enableProgressiveEnrollment",
-          "required": false,
-          "type": "BOOLEAN",
-          "hint": "Enable progressive enrollment to allow users to enroll with iProov.",
+          "hint": "Enter API secret from the service provider created in iProov.",
           "validation": true
         }
       ],
-      "quickStart": "iproov"
+      "quickStart": {
+        "heading": "iProov Set Up Guide",
+        "subHeading": "iProov is now ready to be used as a passwordless multi factor authentication option for your applications..",
+        "steps": [
+          {
+            "content": "Choose the application for which you want to set up iProov login.",
+            "title": "Select Application"
+          },
+          {
+            "content": "Go to the Login Flow tab and click on Start with default configuration.",
+            "title": "Select Start with default configuration",
+            "image": "assets/images/guides/build-login-flow.png"
+          },
+          {
+            "content": "Add iProov authenticator to step 2 by clicking on the Add Authentication button. Click Update to confirm.",
+            "title": "Configure the Login Flow",
+            "image": "assets/images/guides/customize-steps.png"
+          }
+        ]
+      }
     }
   }
 }
