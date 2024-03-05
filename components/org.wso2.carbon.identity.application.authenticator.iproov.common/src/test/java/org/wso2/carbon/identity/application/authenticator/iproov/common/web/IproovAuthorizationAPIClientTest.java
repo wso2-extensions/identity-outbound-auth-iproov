@@ -75,7 +75,6 @@ public class IproovAuthorizationAPIClientTest {
         iproovAuthorizationAPIClient = new IproovAuthorizationAPIClient();
         mockedIproovWebUtils = mockStatic(IproovWebUtils.class);
         mockedEntityUtils = mockStatic(EntityUtils.class);
-
     }
 
     @AfterClass
@@ -85,8 +84,6 @@ public class IproovAuthorizationAPIClientTest {
         mockedEntityUtils.close();
         autoCloseable.close();
     }
-
-
 
     @Test(description = "Test for getToken method")
     public void testGetToken() throws Exception {
@@ -124,7 +121,6 @@ public class IproovAuthorizationAPIClientTest {
         String passedTrue = "{\"passed\":\"true\"}";
         mockedEntityUtils.when(() -> EntityUtils.toString(mockedHttpEntity)).thenReturn(passedTrue);
 
-        // Test getToken method
         boolean passed = iproovAuthorizationAPIClient.validateVerification(baseUrl, tokenPath, apiKey, secret, userId,
                 token);
         Assert.assertTrue(passed);
@@ -132,7 +128,6 @@ public class IproovAuthorizationAPIClientTest {
         String passedFalse = "{\"passed\":\"false\"}";
         when(EntityUtils.toString(mockedHttpEntity)).thenReturn(passedFalse);
 
-        // Test getToken method
         boolean failed = iproovAuthorizationAPIClient.validateVerification(baseUrl, tokenPath, apiKey, secret, userId,
                 token);
         Assert.assertFalse(failed);
