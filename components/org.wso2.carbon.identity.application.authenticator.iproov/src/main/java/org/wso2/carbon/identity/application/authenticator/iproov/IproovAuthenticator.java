@@ -215,7 +215,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     @SuppressWarnings({"CRLF_INJECTION_LOGS", "UNVALIDATED_REDIRECT"})
-    private void initiateIproovAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
+    protected void initiateIproovAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                      AuthenticationContext context) throws
             AuthenticationFailedException, UserStoreException {
 
@@ -403,8 +403,12 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                         IproovAuthenticatorConstants.TokenEndpoints.IPROOV_ENROLL_VERIFICATION_PATH, apiKey, apiSecret,
                         userId, enrollToken);
                 if (!isValidated) {
-                    IproovAuthorizationAPIClient.removeIproovUserProfile(baseUrl, apiKey, oauthUsername, oauthPassword,
-                            userId);
+                    if (IproovAuthorizationAPIClient.removeIproovUserProfile(baseUrl, apiKey, oauthUsername,
+                            oauthPassword, userId)) {
+                        LOG.info("Successfully deleted the user profile from iProov server.");
+                    } else {
+                        LOG.error("Deleting user profile from iProov server failed.");
+                    }
                 }
             }
 

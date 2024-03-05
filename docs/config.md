@@ -48,8 +48,7 @@ Note : The latest project artifacts can also be downloaded from the Connector St
 2. Navigate to `<IS_HOME>/repository/deployment/server/webapps` → `authenticationendpoint`.
 3. Paste or drop the `JSP` file in the `authenticationendpoint` directory.
 4. Add the following configurations to `Resources.properties` file in the 
-`<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/WEB-INF/classes/org/wso2/carbon/identity/application/authentication/endpoint/i18n` directory. Please note
-the following messages can be customized as per the preference.
+`<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/WEB-INF/classes/org/wso2/carbon/identity/application/authentication/endpoint/i18n` directory. Please note the following messages can be customized as per the preference.
     ```
     # iProov
     iproov.heading=Login with your bio-metric authenticator

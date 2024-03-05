@@ -110,10 +110,8 @@ public class IproovAuthorizationAPIClient {
                     createVerificationPayload(apiKey, secret, userId, token), apiKey, secret);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
                 HttpEntity entity = response.getEntity();
                 String jsonString = EntityUtils.toString(entity);
-
                 JSONObject jsonObject = new JSONObject(jsonString);
                 return Boolean.parseBoolean(jsonObject.get(IproovAuthenticatorConstants.VERIFICATION_STATUS)
                         .toString());
@@ -183,7 +181,7 @@ public class IproovAuthorizationAPIClient {
      * @throws IproovAuthnFailedException If an error occurred when removing the iProov user profile from the iProov
      * server.
      */
-    public static void removeIproovUserProfile(String baseUrl, String apiKey, String clientId, String secret,
+    public static boolean removeIproovUserProfile(String baseUrl, String apiKey, String clientId, String secret,
                                                String userId) throws IproovAuthnFailedException {
 
         try {
@@ -195,10 +193,9 @@ public class IproovAuthorizationAPIClient {
                 HttpEntity entity = response.getEntity();
                 String jsonString = EntityUtils.toString(entity);
                 JSONObject jsonObject = new JSONObject(jsonString);
-                if (jsonObject.get("status").equals("Deleted")) {
-                    LOG.info("Successfully deleted the user profile from iProov server.");
-                }
+                return jsonObject.get("status").equals("Deleted");
             }
+            return false;
         } catch (URISyntaxException | IOException | IproovAuthenticatorClientException |
                  IproovAuthenticatorServerException e) {
             throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages

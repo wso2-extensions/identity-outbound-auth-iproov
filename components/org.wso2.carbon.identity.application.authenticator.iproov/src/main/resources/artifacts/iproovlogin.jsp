@@ -148,12 +148,6 @@
   			 <div slot="canceled">
     				<h1 class="iproov-lang-heading">iProov Canceled</h1>
   			</div>
-  			 <div slot="error">
-    				<h1 class="iproov-lang-heading">iProov Error</h1>
-  			</div>
-  			 <div slot="failed">
-    				<h1 class="iproov-lang-heading">iProov Authentication Failed</h1>
-  			</div>
   			 <div slot="no_camera">
     				<h1 class="iproov-lang-heading">No Camera Detected</h1>
   			</div>

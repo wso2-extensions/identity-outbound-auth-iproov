@@ -41,7 +41,7 @@
             "type": "text",
             "name": "oauthUsername",
             "label": "OAuth Username",
-            "placeholder": "Enter OAuth username from created identity provider in iProov.",
+            "placeholder": "Enter OAuth username from created service provider in iProov.",
             "required": true,
             "autoComplete": false,
             "data-testid": "iproov-idp-create-wizard-page-idp-oauthUsername",
@@ -56,7 +56,7 @@
             "type": "password",
             "name": "oauthPassword",
             "label": "OAuth Password",
-            "placeholder": "Enter OAuth username from created identity provider in iProov.",
+            "placeholder": "Enter OAuth username from created service provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-oauthPassword",
@@ -71,7 +71,7 @@
             "type": "text",
             "name": "apiKey",
             "label": "API Key",
-            "placeholder": "Enter API Key from created identity provider in iProov.",
+            "placeholder": "Enter API Key from created service provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-apiKey",
@@ -86,7 +86,7 @@
             "type": "password",
             "name": "apiSecret",
             "label": "API Secret",
-            "placeholder": "Enter API Secret from created identity provider in iProov.",
+            "placeholder": "Enter API Secret from created service provider in iProov.",
             "required": true,
             "autoComplete": false,
             "testId": "iproov-idp-create-wizard-page-idp-apiSecret",
@@ -113,7 +113,7 @@
         "message": {
           "header": "Prerequites",
           "paragraphs": [
-            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered identity provider in iProov <Link>https://www.iproov.com</Link>.",
+            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered service provider in iProov <Link>https://www.iproov.com</Link>.",
           ]
         },
         "fields": [
@@ -127,19 +127,19 @@
           },
           {
             "fieldName": "OAuth Username",
-            "hint": "Provide the <Code class=\"inline-code\">OAuth Username</Code> from the identity provider created in iProov."
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Username</Code> from the service provider created in iProov."
           },
           {
             "fieldName": "OAuth Password",
-            "hint": "Provide the <Code class=\"inline-code\">OAuth Password</Code> from the identity provider created in iProov."
+            "hint": "Provide the <Code class=\"inline-code\">OAuth Password</Code> from the service provider created in iProov."
           },
           {
             "fieldName": "API Key",
-            "hint": "Provide the <Code class=\"inline-code\">API Key</Code> from the identity provider created in iProov."
+            "hint": "Provide the <Code class=\"inline-code\">API Key</Code> from the service provider created in iProov."
           },
           {
             "fieldName": "API Secret",
-            "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> from the identity provider created in iProov."
+            "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> from the service provider created in iProov."
           },
           {
             "fieldName": "Enable Progressive Enrollment",
