@@ -1,0 +1,10 @@
+{
+  "id": "iproov-idp",
+  "name": "iProov",
+  "description": "Enable login for users with iProov.",
+  "image": "assets/images/logos/iproov.svg",
+  "category": "DEFAULT",
+  "displayOrder": 7,
+  "tags": [ "Passwordless", "MFA" ],
+  "type": "identity-provider"
+}
