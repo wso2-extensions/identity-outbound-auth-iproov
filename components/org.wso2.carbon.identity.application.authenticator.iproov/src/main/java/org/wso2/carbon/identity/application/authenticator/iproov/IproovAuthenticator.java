@@ -295,11 +295,11 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             Map<String, String> queryParams = new HashMap<>();
             if (verifyToken != null) {
                 context.setProperty(IproovAuthenticatorConstants.VERIFY_TOKEN, verifyToken);
-                queryParams.put(IproovAuthenticatorConstants.VERIFY_TOKEN, verifyToken);
+                context.getEndpointParams().put(IproovAuthenticatorConstants.VERIFY_TOKEN, verifyToken);
             }
             if (enrollToken != null) {
                 context.setProperty(IproovAuthenticatorConstants.ENROLL_TOKEN, enrollToken);
-                queryParams.put(IproovAuthenticatorConstants.ENROLL_TOKEN, enrollToken);
+                context.getEndpointParams().put(IproovAuthenticatorConstants.ENROLL_TOKEN, enrollToken);
             }
             if (IproovAuthenticatorConstants.Verification.RETRY.equals(request.getParameter(
                     IproovAuthenticatorConstants.SCENARIO))) {
