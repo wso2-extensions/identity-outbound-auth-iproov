@@ -22,6 +22,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.extension.identity.helper.FederatedAuthenticatorUtil;
 import org.wso2.carbon.identity.application.authentication.framework.AbstractApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.AuthenticatorFlowStatus;
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
@@ -34,6 +35,8 @@ import org.wso2.carbon.identity.application.authenticator.iproov.common.constant
 import org.wso2.carbon.identity.application.authenticator.iproov.common.exception.IproovAuthnFailedException;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.web.IproovAuthorizationAPIClient;
 import org.wso2.carbon.identity.application.authenticator.iproov.internal.IproovAuthenticatorDataHolder;
+import org.wso2.carbon.identity.application.common.model.IdentityProvider;
+import org.wso2.carbon.identity.application.common.model.JustInTimeProvisioningConfig;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
@@ -41,10 +44,11 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.event.IdentityEventConstants;
 import org.wso2.carbon.identity.event.IdentityEventException;
 import org.wso2.carbon.identity.event.event.Event;
+import org.wso2.carbon.idp.mgt.IdentityProviderManagementException;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
-import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.io.IOException;
@@ -60,7 +64,6 @@ import static org.wso2.carbon.identity.event.IdentityEventConstants.EventPropert
 import static org.wso2.carbon.identity.event.IdentityEventConstants.EventProperty.OPERATION_STATUS;
 import static org.wso2.carbon.identity.event.IdentityEventConstants.EventProperty.PROPERTY_FAILED_LOGIN_ATTEMPTS_CLAIM;
 import static org.wso2.carbon.identity.event.IdentityEventConstants.EventProperty.USER_STORE_MANAGER;
-import static org.wso2.carbon.user.core.UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME;
 
 /**
  * This class contains all the functional tasks handled by the authenticator with iProov IdP and WSO2 Identity Server.
@@ -140,6 +143,34 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                         .NO_AUTHENTICATED_USER_FOUND_FROM_PREVIOUS_STEP);
             }
+
+            AuthenticatedUser authenticatedUserFromContext = getAuthenticatedUserFromContext(context);
+
+            String tenantDomain = authenticatedUserFromContext.getTenantDomain();
+            if (StringUtils.isBlank(tenantDomain)) {
+                throw new AuthenticationFailedException(
+                        IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_NO_USER_TENANT.getCode(),
+                        IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_NO_USER_TENANT.getMessage());
+            }
+
+            /*
+            The username that the server is using to identify the user, is needed to be identified, as
+            for the federated users, the username in the authentication context may not be same as the
+            username when the user is provisioned to the server.
+             */
+            String mappedLocalUsername = getMappedLocalUsername(authenticatedUserFromContext, context);
+
+            /*
+            If the mappedLocalUsername is blank, that means this is an initial login attempt by a non provisioned
+            federated user.
+             */
+            boolean isInitialFederationAttempt = StringUtils.isBlank(mappedLocalUsername);
+
+            AuthenticatedUser authenticatingUser = resolveAuthenticatingUser(context, authenticatedUserFromContext,
+                    mappedLocalUsername, tenantDomain, isInitialFederationAttempt);
+
+            context.setProperty(IproovAuthenticatorConstants.AUTHENTICATED_USER, authenticatingUser);
+
             String scenario = request.getParameter(IproovAuthenticatorConstants.SCENARIO);
             // In the initial request to launch iProov login page scenario will be null.
             if (IproovAuthenticatorConstants.Verification.AUTHENTICATION.equals(scenario)
@@ -151,8 +182,9 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                 initiateIproovAuthenticationRequest(request, response, context);
                 return AuthenticatorFlowStatus.INCOMPLETE;
             }
+
             boolean isUserIproovEnrolled = Boolean.parseBoolean(getClaimValue(
-                    context.getLastAuthenticatedUser(), IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM));
+                    authenticatingUser, IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM));
             boolean enableProgressiveEnrollment = isIproovProgressiveEnrollmentEnabled(context);
             if (!isUserIproovEnrolled && !enableProgressiveEnrollment) {
                 return AuthenticatorFlowStatus.FAIL_COMPLETED;
@@ -216,31 +248,32 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
 
     @SuppressWarnings({"CRLF_INJECTION_LOGS", "UNVALIDATED_REDIRECT"})
     protected void initiateIproovAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
-                                                     AuthenticationContext context) throws
+                                                       AuthenticationContext context) throws
             AuthenticationFailedException, UserStoreException {
 
-        AuthenticatedUser authenticatedUser;
+        AuthenticatedUser authenticatingdUser;
         String userId;
         boolean isUserIProovEnrolled;
 
         try {
-            authenticatedUser = getAuthenticatedUserFromContext(context);
-            isUserIProovEnrolled = Boolean.parseBoolean(getClaimValue(authenticatedUser,
+            authenticatingdUser = (AuthenticatedUser) context.getProperty(IproovAuthenticatorConstants
+                    .AUTHENTICATED_USER);
+            isUserIProovEnrolled = Boolean.parseBoolean(getClaimValue(authenticatingdUser,
                     IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM));
-            userId = resolveUserId(authenticatedUser);
+            userId = resolveUserId(authenticatingdUser);
 
             if (StringUtils.isBlank(userId)) {
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND);
             }
 
-            boolean isUserAccountLocked = Boolean.parseBoolean(getClaimValue(authenticatedUser,
+            boolean isUserAccountLocked = Boolean.parseBoolean(getClaimValue(authenticatingdUser,
                     IproovAuthenticatorConstants.USER_ACCOUNT_LOCKED_CLAIM));
             if (isUserAccountLocked) {
                 LOG.error("User account is locked.");
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.USER_ACCOUNT_LOCKED);
             }
 
-            String username = authenticatedUser.getUserName();
+            String username = authenticatingdUser.getUserName();
 
             // Extract the IProov configurations.
             Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
@@ -304,7 +337,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             if (IproovAuthenticatorConstants.Verification.RETRY.equals(request.getParameter(
                     IproovAuthenticatorConstants.SCENARIO))) {
                 queryParams.put(IproovAuthenticatorConstants.Verification.RETRY, "true");
-                handleIProovFailedAttempts(authenticatedUser);
+                handleIProovFailedAttempts(authenticatingdUser);
             }
             redirectIproovLoginPage(response, context, IproovAuthenticatorConstants.AuthenticationStatus.PENDING,
                     queryParams);
@@ -318,6 +351,130 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         } catch (UserStoreException e) {
             throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_REG_USER_FAILURE);
         }
+    }
+
+    private AuthenticatedUser resolveAuthenticatingUser(AuthenticationContext context,
+                                                        AuthenticatedUser authenticatedUserInContext,
+                                                        String mappedLocalUsername,
+                                                        String tenantDomain, boolean isInitialFederationAttempt)
+            throws AuthenticationFailedException {
+
+        // Handle local users.
+        if (!authenticatedUserInContext.isFederatedUser()) {
+            return authenticatedUserInContext;
+        }
+
+        if (!isJitProvisioningEnabled(authenticatedUserInContext, tenantDomain)) {
+            throw new AuthenticationFailedException(
+                    IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_INVALID_FEDERATED_USER_AUTHENTICATION.
+                            getCode(), IproovAuthenticatorConstants.ErrorMessages
+                    .ERROR_CODE_INVALID_FEDERATED_USER_AUTHENTICATION.getMessage());
+        }
+
+        // This is a federated initial authentication scenario.
+        if (isInitialFederationAttempt) {
+            context.setProperty(IproovAuthenticatorConstants.IS_INITIAL_FEDERATED_USER_ATTEMPT, true);
+            return authenticatedUserInContext;
+        }
+
+        /*
+        At this point, the authenticating user is in our system but can have a different mapped username compared to the
+        identifier that is in the authentication context. Therefore, we need to have a new AuthenticatedUser object
+        with the mapped local username to identify the user.
+         */
+        AuthenticatedUser authenticatingUser = new AuthenticatedUser(authenticatedUserInContext);
+        authenticatingUser.setUserName(mappedLocalUsername);
+        authenticatingUser.setUserStoreDomain(getFederatedUserStoreDomain(authenticatedUserInContext, tenantDomain));
+        return authenticatingUser;
+    }
+
+    private String getFederatedUserStoreDomain(AuthenticatedUser user, String tenantDomain)
+            throws AuthenticationFailedException {
+
+        String federatedIdp = user.getFederatedIdPName();
+        IdentityProvider idp = getIdentityProvider(federatedIdp, tenantDomain);
+        JustInTimeProvisioningConfig provisioningConfig = idp.getJustInTimeProvisioningConfig();
+        if (provisioningConfig == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("No JIT provisioning configs for idp: %s in tenant: %s", federatedIdp,
+                        tenantDomain));
+            }
+            return null;
+        }
+        String provisionedUserStore = provisioningConfig.getProvisioningUserStore();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(String.format("Setting userstore: %s as the provisioning userstore for user: %s in tenant: %s",
+                    provisionedUserStore, user.getUserName(), tenantDomain));
+        }
+        return provisionedUserStore;
+    }
+
+    private boolean isJitProvisioningEnabled(AuthenticatedUser user, String tenantDomain)
+            throws AuthenticationFailedException {
+
+        String federatedIdp = user.getFederatedIdPName();
+        IdentityProvider idp = getIdentityProvider(federatedIdp, tenantDomain);
+        JustInTimeProvisioningConfig provisioningConfig = idp.getJustInTimeProvisioningConfig();
+        if (provisioningConfig == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("No JIT provisioning configs for idp: %s in tenant: %s", federatedIdp,
+                        tenantDomain));
+            }
+            return false;
+        }
+        return provisioningConfig.isProvisioningEnabled();
+    }
+
+    private IdentityProvider getIdentityProvider(String idpName, String tenantDomain) throws
+            AuthenticationFailedException {
+
+        try {
+            IdentityProvider idp = IproovAuthenticatorDataHolder.getIdpManager().getIdPByName(idpName, tenantDomain);
+            if (idp == null) {
+                throw new AuthenticationFailedException(
+                        String.format(
+                                IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_INVALID_FEDERATED_AUTHENTICATOR
+                                        .getMessage(), idpName, tenantDomain));
+            }
+            return idp;
+        } catch (IdentityProviderManagementException e) {
+            throw new AuthenticationFailedException(String.format(
+                    IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_INVALID_FEDERATED_AUTHENTICATOR.getMessage(),
+                    idpName, tenantDomain));
+        }
+    }
+
+    /**
+     * Retrieve the provisioned username of the authenticated user. If this is a federated scenario, the
+     * authenticated username will be same as the username in context. If the flow is for a JIT provisioned user, the
+     * provisioned username will be returned.
+     *
+     * @param authenticatedUser AuthenticatedUser.
+     * @param context           AuthenticationContext.
+     * @return Provisioned username
+     * @throws AuthenticationFailedException If an error occurred while getting the provisioned username.
+     */
+    private String getMappedLocalUsername(AuthenticatedUser authenticatedUser, AuthenticationContext context)
+            throws AuthenticationFailedException {
+
+        if (!authenticatedUser.isFederatedUser()) {
+            return authenticatedUser.getUserName();
+        }
+
+        // If the user is federated, we need to check whether the user is already provisioned to the organization.
+        String federatedUsername = FederatedAuthenticatorUtil.getLoggedInFederatedUser(context);
+        if (StringUtils.isBlank(federatedUsername)) {
+            throw new AuthenticationFailedException(
+                    IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_NO_AUTHENTICATED_USER.getCode(),
+                    IproovAuthenticatorConstants.ErrorMessages.ERROR_CODE_NO_FEDERATED_USER.getMessage());
+        }
+        String associatedLocalUsername =
+                FederatedAuthenticatorUtil.getLocalUsernameAssociatedWithFederatedUser(MultitenantUtils.
+                        getTenantAwareUsername(federatedUsername), context);
+        if (StringUtils.isNotBlank(associatedLocalUsername)) {
+            return associatedLocalUsername;
+        }
+        return null;
     }
 
     private AuthenticatedUser getAuthenticatedUserFromContext(AuthenticationContext context)
@@ -358,11 +515,12 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
     protected void processAuthenticationResponse(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) throws AuthenticationFailedException {
 
-        AuthenticatedUser authenticatedUserFromContext = getAuthenticatedUserFromContext(context);
+        AuthenticatedUser authenticatingUser = (AuthenticatedUser) context.getProperty(
+                IproovAuthenticatorConstants.AUTHENTICATED_USER);
 
         boolean isUserAccountLocked;
         try {
-            isUserAccountLocked = Boolean.parseBoolean(getClaimValue(authenticatedUserFromContext,
+            isUserAccountLocked = Boolean.parseBoolean(getClaimValue(authenticatingUser,
                     IproovAuthenticatorConstants.USER_ACCOUNT_LOCKED_CLAIM));
 
             if (isUserAccountLocked) {
@@ -371,8 +529,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             }
 
             String userId;
-            String username = authenticatedUserFromContext.getUserName();
-            userId = resolveUserId(authenticatedUserFromContext);
+            userId = resolveUserId(authenticatingUser);
             if (StringUtils.isBlank(userId)) {
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND);
             }
@@ -413,18 +570,20 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
             }
 
             if (!isValidated) {
-                handleIProovFailedAttempts(authenticatedUserFromContext);
+                handleIProovFailedAttempts(authenticatingUser);
                 throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                         .IPROOV_VERIFICATION_TOKEN_VALIDATING_FAILURE);
             }
 
             //Set the authenticated user.
-            context.setSubject(authenticatedUserFromContext);
+            context.setSubject(authenticatingUser);
             if (IproovAuthenticatorConstants.Verification.ENROLLMENT.equals(verificationMode)) {
-                UserStoreManager userStoreManager = getUserStoreManager(authenticatedUserFromContext);
+                UserStoreManager userStoreManager = getUserStoreManager(authenticatingUser);
                 Map<String, String> claims = new HashMap<>();
                 claims.put(IproovAuthenticatorConstants.IPROOV_ENROLLED_CLAIM, "true");
-                userStoreManager.setUserClaimValues(username, claims, null);
+
+                userStoreManager.setUserClaimValues(MultitenantUtils.getTenantAwareUsername(authenticatingUser
+                        .toFullQualifiedUsername()), claims, null);
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully logged in the user " + userId);
@@ -514,17 +673,9 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
     private UserStoreManager getUserStoreManager(AuthenticatedUser authenticatedUser)
             throws AuthenticationFailedException, UserStoreException {
 
-        UserRealm userRealm = getTenantUserRealm(authenticatedUser.getTenantDomain());
-        String userStoreDomain = authenticatedUser.getUserStoreDomain();
+        UserRealm userRealm = getUserRealm(authenticatedUser.toFullQualifiedUsername());
         try {
-            UserStoreManager userStoreManager = userRealm.getUserStoreManager();
-            if (userStoreManager == null) {
-                throw new UserStoreException("UserStoreManager is null");
-            }
-            if (StringUtils.isBlank(userStoreDomain) || PRIMARY_DEFAULT_DOMAIN_NAME.equals(userStoreDomain)) {
-                return userStoreManager;
-            }
-            return ((AbstractUserStoreManager) userStoreManager).getSecondaryUserStoreManager(userStoreDomain);
+            return userRealm.getUserStoreManager();
         } catch (UserStoreException e) {
             throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages.RETRIEVING_REG_USER_FAILURE,
                     e);
@@ -534,16 +685,20 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
     /**
      * Get the UserRealm for the user given user.
      *
-     * @param tenantDomain Tenant domain.
+     * @param username Username.
      * @return UserRealm.
      * @throws IproovAuthnFailedException If an error occurred while getting the UserRealm or Userstore.
      */
-    private UserRealm getTenantUserRealm(String tenantDomain) throws IproovAuthnFailedException {
+    private UserRealm getUserRealm(String username) throws IproovAuthnFailedException {
 
-        int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
-        UserRealm userRealm;
+        UserRealm userRealm = null;
         try {
-            userRealm = (IproovAuthenticatorDataHolder.getRealmService()).getTenantUserRealm(tenantId);
+            if (username != null) {
+                String tenantDomain = MultitenantUtils.getTenantDomain(username);
+                int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+                RealmService realmService = IproovAuthenticatorDataHolder.getRealmService();
+                userRealm = realmService.getTenantUserRealm(tenantId);
+            }
         } catch (UserStoreException e) {
             throw getIproovAuthnFailedException(IproovAuthenticatorConstants.ErrorMessages
                     .RETRIEVING_USER_STORE_FAILURE, e);
@@ -583,18 +738,18 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
         }
     }
 
-    private String resolveUserId(AuthenticatedUser authenticatedUserFromContext) throws AuthenticationFailedException,
+    private String resolveUserId(AuthenticatedUser authenticatingUser) throws AuthenticationFailedException,
             UserStoreException, UserIdNotFoundException {
 
-        if (authenticatedUserFromContext.isFederatedUser()) {
-            UserStoreManager userStoreManager = getUserStoreManager(authenticatedUserFromContext);
+        if (authenticatingUser.isFederatedUser()) {
+            UserStoreManager userStoreManager = getUserStoreManager(authenticatingUser);
             Map<String, String> claimValues =
                     userStoreManager.getUserClaimValues(MultitenantUtils.getTenantAwareUsername(
-                                    authenticatedUserFromContext.toFullQualifiedUsername()),
+                                    authenticatingUser.toFullQualifiedUsername()),
                             new String[]{IproovAuthenticatorConstants.USER_ID_CLAIM}, null);
             return claimValues.get(IproovAuthenticatorConstants.USER_ID_CLAIM);
         }
-        return authenticatedUserFromContext.getUserId();
+        return authenticatingUser.getUserId();
     }
 
     private boolean isIproovProgressiveEnrollmentEnabled(AuthenticationContext context) {

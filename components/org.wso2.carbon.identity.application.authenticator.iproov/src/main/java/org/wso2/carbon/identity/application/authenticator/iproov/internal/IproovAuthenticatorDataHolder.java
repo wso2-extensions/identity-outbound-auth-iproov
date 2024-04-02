@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.application.authenticator.iproov.internal;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService;
+import org.wso2.carbon.idp.mgt.IdpManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
@@ -31,6 +32,7 @@ public class IproovAuthenticatorDataHolder {
     private static IdentityEventService identityEventService;
     private static IdentityGovernanceService identityGovernanceService;
     private static AccountLockService accountLockService;
+    private static IdpManager idpManager;
 
     private IproovAuthenticatorDataHolder() {
 
@@ -120,5 +122,16 @@ public class IproovAuthenticatorDataHolder {
     public static void setAccountLockService(AccountLockService accountLockService) {
 
         IproovAuthenticatorDataHolder.accountLockService = accountLockService;
+    }
+
+
+    public static IdpManager getIdpManager() {
+
+        return idpManager;
+    }
+
+    public static void setIdpManager(IdpManager idpManager) {
+
+        IproovAuthenticatorDataHolder.idpManager = idpManager;
     }
 }

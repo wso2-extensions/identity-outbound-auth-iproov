@@ -53,7 +53,14 @@ public class IproovAuthenticatorConstants {
         IPROOV_REMOVING_USER_PROFILE_FAILURE("65017", "Error while removing the iProov user profile."),
         IPROOV_RETRIEVING_ACCESS_TOKEN_FAILURE("65018", "Error while retrieving the iProov access token."),
         IPROOV_SETTING_IPROOV_CLAIM_VALUE_FAILURE("65019", "Error while setting the iProov claim value."),
-        IPROOV_REDIRECT_URL_BUILD_FAILURE("65020", "Error while building the iProov redirect URL.");
+        IPROOV_REDIRECT_URL_BUILD_FAILURE("65020", "Error while building the iProov redirect URL."),
+        ERROR_CODE_INVALID_FEDERATED_AUTHENTICATOR("65021", "No IDP found with the name IDP: " +
+                                                           "%s in tenant: %s"),
+        ERROR_CODE_INVALID_FEDERATED_USER_AUTHENTICATION("65023", "Can not handle federated user " +
+                "authentication with TOTP as JIT Provision is not enabled for the IDP: in the tenant: %s"),
+        ERROR_CODE_NO_AUTHENTICATED_USER("65004", "Can not find the authenticated user"),
+        ERROR_CODE_NO_FEDERATED_USER("65002", "No federated user found"),
+        ERROR_CODE_NO_USER_TENANT("65005", "Can not find the authenticated user's tenant domain");
 
         private final String code;
         private final String message;
@@ -201,6 +208,7 @@ public class IproovAuthenticatorConstants {
         public static final String IPROOV_DELETE_USER_PATH = "/api/v2/users/";
     }
 
+    public static final String AUTHENTICATED_USER = "authenticatedUser";
     public static final String SESSION_DATA_KEY = "sessionDataKey";
     public static final String SCENARIO = "scenario";
     public static final String AUTHENTICATOR_NAME = "AuthenticatorName";
@@ -224,6 +232,7 @@ public class IproovAuthenticatorConstants {
     public static final String USER_ID_CLAIM = "http://wso2.org/claims/userid";
     public static final String USER_ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
     public static final String IPROOV_LOGIN_PAGE = "/authenticationendpoint/iproovlogin.jsp";
+    public static final String IS_INITIAL_FEDERATED_USER_ATTEMPT = "isInitialFederationAttempt";
 
     /**
      * Object holding authentication mobile response status.
