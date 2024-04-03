@@ -26,13 +26,17 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.identity.application.authentication.framework.AuthenticatorFlowStatus;
+import org.wso2.carbon.identity.application.authentication.framework.config.model.SequenceConfig;
+import org.wso2.carbon.identity.application.authentication.framework.config.model.StepConfig;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authenticator.iproov.common.constants.IproovAuthenticatorConstants;
 import org.wso2.carbon.identity.application.common.model.Property;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +64,9 @@ public class IproovAuthenticatorTest {
 
     @Mock
     private HttpServletResponse httpServletResponse;
+
+    @Mock
+    private AuthenticatedUser mockedAuthenticatedUser;
 
     @Spy
     private AuthenticationContext context;
@@ -136,22 +143,39 @@ public class IproovAuthenticatorTest {
     public void testProcessWithStatusCompletedWithAuthentication() throws AuthenticationFailedException {
 
         doReturn(true).when(mockedIproovAuthenticator).canHandle(httpServletRequest);
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
-        authenticatedUser.setUserId("testUser");
-        when(context.getLastAuthenticatedUser()).thenReturn(authenticatedUser);
+
+        setAuthenticatedUser();
         mockHttpServletRequest("authentication");
         doNothing().when(spy).processAuthenticationResponse(httpServletRequest, httpServletResponse, context);
         AuthenticatorFlowStatus status = spy.process(httpServletRequest, httpServletResponse, context);
         Assert.assertEquals(status, AuthenticatorFlowStatus.SUCCESS_COMPLETED);
     }
 
+    private void setAuthenticatedUser() {
+
+        when(mockedAuthenticatedUser.toFullQualifiedUsername()).thenReturn("testUser@testDomain");
+        when(mockedAuthenticatedUser.getUserName()).thenReturn("testUser");
+        when(mockedAuthenticatedUser.getTenantDomain()).thenReturn("testDomain");
+        when(mockedAuthenticatedUser.getUserStoreDomain()).thenReturn("testUserStoreDomain");
+
+        when(context.getProperty(IproovAuthenticatorConstants.AUTHENTICATED_USER)).thenReturn(mockedAuthenticatedUser);
+        when(context.getLastAuthenticatedUser()).thenReturn(mockedAuthenticatedUser);
+        StepConfig stepConfig = new StepConfig();
+        stepConfig.setAuthenticatedUser(mockedAuthenticatedUser);
+        stepConfig.setSubjectAttributeStep(true);
+        Map<Integer, StepConfig> stepConfigMap = new HashMap<>();
+        stepConfigMap.put(1, stepConfig);
+        SequenceConfig sequenceConfig = new SequenceConfig();
+        sequenceConfig.setStepMap(stepConfigMap);
+        when(context.getSequenceConfig()).thenReturn(sequenceConfig);
+    }
+
     @Test(description = "Test for initiateAuthenticationRequest method")
     public void testProcessWithStatusCompletedWithVerification() throws AuthenticationFailedException {
 
         doReturn(true).when(mockedIproovAuthenticator).canHandle(httpServletRequest);
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
-        authenticatedUser.setUserId("testUser");
-        when(context.getLastAuthenticatedUser()).thenReturn(authenticatedUser);
+
+        setAuthenticatedUser();
         mockHttpServletRequest("enrollment");
         doNothing().when(spy).processAuthenticationResponse(httpServletRequest, httpServletResponse, context);
         AuthenticatorFlowStatus status = spy.process(httpServletRequest, httpServletResponse, context);
@@ -162,9 +186,8 @@ public class IproovAuthenticatorTest {
     public void testProcessWithStatusIncompleteWithRetry() throws Exception {
 
         doReturn(true).when(mockedIproovAuthenticator).canHandle(httpServletRequest);
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
-        authenticatedUser.setUserId("testUser");
-        when(context.getLastAuthenticatedUser()).thenReturn(authenticatedUser);
+
+        setAuthenticatedUser();
         mockHttpServletRequest("retry");
         doNothing().when(spy).initiateIproovAuthenticationRequest(httpServletRequest, httpServletResponse, context);
         AuthenticatorFlowStatus status = spy.process(httpServletRequest, httpServletResponse, context);
