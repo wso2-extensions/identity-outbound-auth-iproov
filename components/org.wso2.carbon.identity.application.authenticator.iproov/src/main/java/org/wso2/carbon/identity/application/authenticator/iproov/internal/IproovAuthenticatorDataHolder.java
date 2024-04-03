@@ -124,12 +124,21 @@ public class IproovAuthenticatorDataHolder {
         IproovAuthenticatorDataHolder.accountLockService = accountLockService;
     }
 
-
+    /**
+     * Get IdpManager.
+     *
+     * @return IdpManager.
+     */
     public static IdpManager getIdpManager() {
 
         return idpManager;
     }
 
+    /**
+     * Set IdpManager.
+     *
+     * @param idpManager IdpManager.
+     */
     public static void setIdpManager(IdpManager idpManager) {
 
         IproovAuthenticatorDataHolder.idpManager = idpManager;

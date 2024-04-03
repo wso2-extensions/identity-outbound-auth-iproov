@@ -451,7 +451,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
      *
      * @param authenticatedUser AuthenticatedUser.
      * @param context           AuthenticationContext.
-     * @return Provisioned username
+     * @return Provisioned username.
      * @throws AuthenticationFailedException If an error occurred while getting the provisioned username.
      */
     private String getMappedLocalUsername(AuthenticatedUser authenticatedUser, AuthenticationContext context)
@@ -492,8 +492,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                                     USER_NOT_FOUND.getCode(),
                                     IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage());
                         }
-                        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user);
-                        if (StringUtils.isBlank(authenticatedUser.toFullQualifiedUsername())) {
+                        if (StringUtils.isBlank(user.toFullQualifiedUsername())) {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("Username can not be empty.");
                             }
@@ -501,7 +500,7 @@ public class IproovAuthenticator extends AbstractApplicationAuthenticator implem
                                     USER_NOT_FOUND.getCode(),
                                     IproovAuthenticatorConstants.ErrorMessages.USER_NOT_FOUND.getMessage());
                         }
-                        return authenticatedUser;
+                        return user;
                     }
                 }
             }
