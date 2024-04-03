@@ -169,6 +169,7 @@ public class IproovAuthenticatorTest {
         sequenceConfig.setStepMap(stepConfigMap);
         when(context.getSequenceConfig()).thenReturn(sequenceConfig);
     }
+
     @Test(description = "Test for initiateAuthenticationRequest method")
     public void testProcessWithStatusCompletedWithVerification() throws AuthenticationFailedException {
 
