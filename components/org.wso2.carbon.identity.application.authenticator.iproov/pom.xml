@@ -22,7 +22,7 @@
     <parent>
         <artifactId>identity-outbound-auth-iproov</artifactId>
         <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
