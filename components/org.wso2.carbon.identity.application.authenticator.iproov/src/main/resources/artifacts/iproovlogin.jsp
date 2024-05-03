@@ -51,7 +51,7 @@
     <% } else { %>
     <jsp:include page="includes/header.jsp"/>
     <% } %>
-    <script src="libs/iproov_5.1/iProovMe.js"></script>
+    <script src="https://cdn.iproov.app/iproovme/5.1.0/iProovMe.js"></script>
     <style type="text/css">
         .iproov-segment {
             text-align: center !important;
@@ -147,6 +147,12 @@
   			</div>
   			 <div slot="canceled">
     				<h1 class="iproov-lang-heading">iProov Canceled</h1>
+  			</div>
+  			 <div slot="error">
+    				<h1 class="iproov-lang-heading">iProov Error</h1>
+  			</div>
+  			 <div slot="failed">
+    				<h1 class="iproov-lang-heading">iProov Authentication Failed</h1>
   			</div>
   			 <div slot="no_camera">
     				<h1 class="iproov-lang-heading">No Camera Detected</h1>

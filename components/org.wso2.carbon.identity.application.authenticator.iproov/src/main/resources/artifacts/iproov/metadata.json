@@ -93,18 +93,6 @@
             "maxLength": "100",
             "minLength": "3",
             "width": "13"
-          },
-          {
-            "index": 6,
-            "className": "addon-field-wrapper",
-            "ariaLabel": "Enable Progressive Enrollment",
-            "type": "BOOLEAN",
-            "name": "enableProgressiveEnrollment",
-            "label": "Enable Progressive Enrollment",
-            "required": false,
-            "autoComplete": false,
-            "testId": "iproov-idp-create-wizard-page-idp-enableProgressiveEnrollment",
-            "defaultValue": true
           }
         ]
 
@@ -140,10 +128,6 @@
           {
             "fieldName": "API Secret",
             "hint": "Provide the <Code class=\"inline-code\">API Secret</Code> from the service provider created in iProov."
-          },
-          {
-            "fieldName": "Enable Progressive Enrollment",
-            "hint": "Enable progressive enrollment to allow users to enroll with iProov during login."
           }
         ]
       }
@@ -206,17 +190,6 @@
         }
       ],
       "settings" : [
-        {
-          "index": 3,
-          "displayOrder" : 3,
-          "label": "Enable Progressive Enrollment",
-          "data-testid": "idp-edit-page-authenticator-settings-IPROOVAuthenticator-content-form-enableProgressiveEnrollment",
-          "name": "enableProgressiveEnrollment",
-          "required": false,
-          "type": "BOOLEAN",
-          "hint": "Enable progressive enrollment to allow users to enroll with iProov during login.",
-          "validation": true
-        },
         {
           "index": 4,
           "displayOrder" : 4,
