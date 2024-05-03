@@ -1,0 +1,18 @@
+{
+  "name": "iProov Authenticator",
+  "owner": "WSO2",
+  "category": "Federated authenticator",
+  "documentationUrl": "https://github.com/wso2-extensions/identity-outbound-auth-iproov/tree/main/docs",
+  "description": "The iProov authenticator, which is configured as a federated authenticator in WSO2 Identity Server, will allow users to authorize an authentication request using their facial bio-metrics while providing a secure and convenient password-less multi-factor authentication flow.",
+  "status": "Active",
+  "labels": ["Connector", "Federated Authenticator", "iProov", "Multi-factor Authentication",
+    "Password-less Authentication", "Facial Bio-metrics"],
+  "releases": [
+    {
+      "tagName": "1.0.2",
+      "products": [
+        "IS 7.0.0"
+      ]
+    }
+  ]
+}
