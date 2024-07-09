@@ -9,7 +9,7 @@
     "Password-less Authentication", "Facial Bio-metrics"],
   "releases": [
     {
-      "tagName": "1.0.3",
+      "tagName": "v1.0.3",
       "products": [
         "IS 7.0.0"
       ]
