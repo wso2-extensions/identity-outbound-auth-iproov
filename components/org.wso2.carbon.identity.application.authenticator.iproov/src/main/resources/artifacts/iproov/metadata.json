@@ -99,9 +99,9 @@
       },
       "wizardHelp": {
         "message": {
-          "header": "Prerequites",
+          "header": "Prerequisites",
           "paragraphs": [
-            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered service provider in iProov <Link>https://www.iproov.com</Link>.",
+            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered service provider in iProov <Link>https://www.iproov.com</Link>."
           ]
         },
         "fields": [
