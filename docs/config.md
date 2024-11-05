@@ -125,7 +125,8 @@ The WSO2 Console's UI for the iproov connector enables developers to easily conf
 as an identity provider for their application. The UI offers a user-friendly and intuitive
 interface for defining essential iproov credentials, such as base URL, oauth username, oauth password,
 api key and api secret
-![Configuring iProov in WSO2 Console](images/wso2console.png)
+
+![Configuring iProov in WSO2 Console](../images/wso2console.png)
 
 ### Base URL
 This refers to the Base URL you received from iProov upon creating a service provider for your organization.
