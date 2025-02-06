@@ -3,7 +3,7 @@
     "image": "assets/images/logos/iproov.svg",
     "header": "iProov",
     "Subheading": "Enable login for users with iProov.",
-    "documentation": "{ENV}/asgardeo/docs/guides/authentication/#manage-connections",
+    "documentation": "",
     "modal": {
       "form": {
         "fields": [
