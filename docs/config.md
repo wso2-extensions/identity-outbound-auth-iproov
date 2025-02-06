@@ -45,35 +45,11 @@ Note : The latest project artifacts can also be downloaded from the Connector St
 13. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
     → `src/main/resources/artifacts` and copy the `iproov.svg` file.
 14. Paste it into following directories.
-    - `<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/libs/themes/default/assets/images/identity-providers/`
     - `<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/libs/themes/wso2is/assets/images/identity-providers/`
-    - `<IS_HOME>/repository/deployment/server/webapps/console/resources/connections/assets/images/logos/`
-
-**Step 3:** Deploying the iproov login page
-1. Copy `iproovlogin.jsp` in the downloaded artifacts.
-2. Navigate to `<IS_HOME>/repository/deployment/server/webapps` → `authenticationendpoint`.
-3. Paste or drop the `JSP` file in the `authenticationendpoint` directory.
-4. Add the following configurations to `Resources.properties` file in the 
-`<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/WEB-INF/classes/org/wso2/carbon/identity/application/authentication/endpoint/i18n` directory. Please note the following messages can be customized as per the preference.
-    ```
-    # iProov
-    iproov.heading=Login with your bio-metric authenticator
-    iproov.login.button=Login
-    iproov.scan.face.button=Scan Face with iProov
-    iproov.rescan.face.button=Rescan Face with iProov
-    iproov.authentication.failed.message=Authentication Failed. Try again.
-    iproov.grant.camera.access.message=Grant camera access to use your bio-metric authenticator.
-    iproov.grant.camera.access.button=Grant Permission
-    iproov.username.error=Username is required.
-    iproov.timeout.error=Authentication failed due to timeout. Please try again later.
-    iproov.generic.error=Authentication failed. Please try again later.
-    iproov.auth.start=Authentication in progress. Please wait...
-    ```
-   
-5. Restart the WSO2 Identity Server.
 
 **Step 4:** Adding required identity claims to the product
-1.execute the following curl commands to add the required identity claims to the product.
+1. Restart the WSO2 Identity Server.
+2. Execute the following curl commands to add the required identity claims to the product.
 ```
     curl --location '<server-url>/t/<tenant-domain>/api/server/v1/claim-dialects/local/claims' \
     --header 'accept: application/json' \

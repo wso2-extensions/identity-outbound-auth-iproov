@@ -151,16 +151,6 @@
                 <version>${javax.ws.rs.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
@@ -382,7 +372,6 @@
         <httpcore.version>4.3.3.wso2v1</httpcore.version>
         <httpcomponents-httpclient.wso2.version>4.5.13.wso2v1</httpcomponents-httpclient.wso2.version>
         <org.wso2.carbon.commons.version>4.7.24</org.wso2.carbon.commons.version>
-        <spring-boot.version>2.6.8</spring-boot.version>
         <gson.version>2.9.0</gson.version>
         <testng.version>6.9.10</testng.version>
         <mockito.version>3.8.0</mockito.version>
@@ -392,7 +381,6 @@
         <cxf-bundle-jaxrs.version>2.2.9</cxf-bundle-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <javax.ws.rs.version>1.0</javax.ws.rs.version>
-        <springframework.version>5.3.19</springframework.version>
         <pax-logging-api.version>2.1.0-wso2v4</pax-logging-api.version>
         <json.wso2.version>3.0.0.wso2v1</json.wso2.version>
         <carbon.identity.account.lock.handler.version>1.8.2</carbon.identity.account.lock.handler.version>
