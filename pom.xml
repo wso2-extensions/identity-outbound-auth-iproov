@@ -30,13 +30,13 @@
         <url>https://github.com/wso2-extensions/identity-outbound-auth-iproov.git</url>
         <developerConnection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-iproov.git</developerConnection>
         <connection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-iproov.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.4</tag>
     </scm>
 
     <groupId>org.wso2.carbon.identity.outbound.auth.iproov</groupId>
     <artifactId>identity-outbound-auth-iproov</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <name>WSO2 Carbon - iProov Authenticator Feature Aggregator Module</name>
     <modules>
         <module>components/org.wso2.carbon.identity.application.authenticator.iproov</module>
