@@ -101,7 +101,7 @@
         "message": {
           "header": "Prerequisites",
           "paragraphs": [
-            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered service provider in iProov <Link>https://www.iproov.com</Link>."
+            "iProov helps you to authenticate users using their face bio-metrics. To use iProov, you need to have a registered service provider in <a href=\"https://www.iproov.com\" target=\"_blank\" rel=\"noopener noreferrer\">iProov</a>."
           ]
         },
         "fields": [
@@ -253,11 +253,6 @@
           {
             "content": "Choose the application for which you want to set up iProov login.",
             "title": "Select Application"
-          },
-          {
-            "content": "Go to the Login Flow tab and click on Start with default configuration.",
-            "title": "Select Start with default configuration",
-            "image": "assets/images/guides/build-login-flow.png"
           },
           {
             "content": "Add iProov authenticator to step 2 by clicking on the Add Authentication button. Click Update to confirm.",
