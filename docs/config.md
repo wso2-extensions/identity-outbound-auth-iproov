@@ -31,20 +31,19 @@ Note : The latest project artifacts can also be downloaded from the Connector St
 2. Copy the `org.wso2.carbon.identity.application.authenticator.iproov-<version>-SNAPSHOT.jar` file.
 3. Navigate to `<IS_HOME>/repository/components/dropins`.
 4. Paste the `.jar` file into the dropins directory.
-5. Alternatively, it's possible to drag and drop the `.jar` file to the dropins directory.
-6. Next, navigate to `identity-outbound-auth-iproov/components` →
+5. Next, navigate to `identity-outbound-auth-iproov/components` →
    `org.wso2.carbon.identity.application.authenticator.iproov.common` → `target`.
-7. Copy the `org.wso2.carbon.identity.application.authenticator.iproov.common-<version>-SNAPSHOT.jar` file.
-8. Navigate to `<IS_HOME>/repository/components/lib` directory and paste the `.jar` file.
-9. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
+6. Copy the `org.wso2.carbon.identity.application.authenticator.iproov.common-<version>-SNAPSHOT.jar` file.
+7. Navigate to `<IS_HOME>/repository/components/lib` directory and paste the `.jar` file.
+8. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
    → `src/main/resources/artifacts` and copy the `iproov` directory.
-10. Paste it into `<IS_HOME>/repository/resources/identity/extensions/connections` directory.
-11. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
+9. Paste it into `<IS_HOME>/repository/resources/identity/extensions/connections` directory.
+10. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
    → `src/main/resources/artifacts` and copy the `guides` directory.
-12. Paste it into `<IS_HOME>/repository/deployment/server/webapps/console/resources/connections/assets/images` directory.
-13. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
+11. Paste it into `<IS_HOME>/repository/deployment/server/webapps/console/resources/connections/assets/images` directory.
+12. Navigate to `identity-outbound-auth-iproov/components` → `org.wso2.carbon.identity.application.authenticator.iproov`
     → `src/main/resources/artifacts` and copy the `iproov.svg` file.
-14. Paste it into following directories.
+13. Paste it into following directories.
     - `<IS_HOME>/repository/deployment/server/webapps/authenticationendpoint/libs/themes/wso2is/assets/images/identity-providers/`
 
 **Step 4:** Adding required identity claims to the product
